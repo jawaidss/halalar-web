@@ -4,3 +4,4 @@
 cover
 .coverage
 .DS_Store
+db.sqlite3

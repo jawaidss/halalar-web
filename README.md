@@ -14,6 +14,8 @@ git clone git@github.com:jawaidss/halalar-web.git
 cd halalar-web
 mkvirtualenv halalar
 pip install -r requirements.txt
+cd halalar
+python manage.py syncdb --noinput
 ```
 
 ## Usage
