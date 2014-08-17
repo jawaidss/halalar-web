@@ -113,3 +113,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.messages.context_processors.messages',
     'halalar.context_processors.site',
 )
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
