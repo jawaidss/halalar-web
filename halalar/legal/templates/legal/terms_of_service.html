@@ -1,3 +1,8 @@
+{% extends 'marketing/base.html' %}
+
+{% block title %}{% block description %}Terms of Service{% endblock %}{% endblock %}
+
+{% block content %}
 <h1>Terms of Service ("Terms")</h1>
 <p>Last updated: August 17, 2014</p>
 
@@ -34,3 +39,4 @@
 <p><strong>Contact Us</strong></p>
 
 <p>If you have any questions about these Terms, please <a href="{% url 'marketing-contact' %}">contact us</a>.</p>
+{% endblock %}
