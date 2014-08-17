@@ -23,3 +23,9 @@ cd /path/to/halalar-web/halalar
 workon halalar
 python manage.py runserver
 ```
+
+## Testing
+
+```bash
+python manage.py test marketing.tests legal.tests
+```
