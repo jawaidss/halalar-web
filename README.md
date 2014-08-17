@@ -29,3 +29,9 @@ python manage.py runserver
 ```bash
 python manage.py test marketing.tests legal.tests
 ```
+
+## Style
+
+```bash
+flake8 .
+```
