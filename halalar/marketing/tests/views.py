@@ -24,3 +24,15 @@ class ThanksViewTestCase(TestCase):
         response = self.client.get(reverse('marketing-thanks'))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'marketing/thanks.html')
+
+class AdminTestCase(TestCase):
+    def test_admin(self):
+        response = self.client.get(reverse('admin:index'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'admin/base_site.html')
+
+class SitemapTestCase(TestCase):
+    def test_sitemap(self):
+        response = self.client.get(reverse('django.contrib.sitemaps.views.sitemap'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.get('Content-Type'), 'application/xml')
