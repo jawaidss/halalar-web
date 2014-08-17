@@ -1,0 +1,74 @@
+body {
+  background-color: #177daf;
+  color: #ffffff;
+  text-align: center;
+  font-family: Oswald;
+}
+
+a {
+  color: #ffffff;
+}
+
+img {
+  max-width: 100%;
+}
+
+.header {
+  padding: 10px;
+}
+
+.header img {
+  width: 50px;
+  vertical-align: middle;
+}
+
+.header a {
+  font-size: 25px;
+  text-decoration: none;
+}
+
+.content-wrapper {
+  background-color: #ff9316;
+  color: #000000;
+  padding: 10px;
+}
+
+.content {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.splash {
+  padding: 10px;
+}
+
+.splash img {
+  width: 250px;
+}
+
+#mc_embed_signup {
+  width: 250px;
+  margin: 0 auto;
+}
+
+.download {
+  padding: 10px;
+}
+
+.download img {
+  width: 250px;
+  vertical-align: middle;
+  padding: 5px 0;
+}
+
+.social {
+  padding: 10px;
+}
+
+.social img {
+  width: 57px;
+}
+
+.footer {
+  padding: 10px;
+}

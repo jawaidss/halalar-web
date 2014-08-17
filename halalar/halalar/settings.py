@@ -112,6 +112,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.tz',
     'django.contrib.messages.context_processors.messages',
     'halalar.context_processors.site',
+    'halalar.context_processors.today',
 )
 
 STATICFILES_DIRS = (
