@@ -7,29 +7,45 @@
     <title>{{ site.name }} | {% block title %}{% endblock %}</title>
     <meta name="description" content="{% block description %}{% endblock %}">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/pure-min.css">
+    <!--[if lte IE 8]>
+        <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/grids-responsive-old-ie-min.css">
+    <![endif]-->
+    <!--[if gt IE 8]><!-->
+        <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/grids-responsive-min.css">
+    <!--<![endif]-->
     <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Oswald">
-    <link rel="stylesheet" href="{% static 'css/normalize.css' %}">
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
   </head>
   <body>
-    <div class="header">
-      <a href="{% url 'marketing-about' %}">About</a>
-      <a href="{% url 'marketing-home' %}">
-        <img src="{% static 'img/icon.png' %}" alt="{{ site.name }}">
+    <div class="pure-menu pure-menu-open pure-menu-horizontal">
+      <ul>
+        <li><a href="{% url 'marketing-about' %}">About</a></li>
+      </ul>
+
+      <a href="{% url 'marketing-home' %}" class="pure-menu-heading">
+        <img class="icon" src="{% static 'img/icon.png' %}" alt="{{ site.name }}">
       </a>
-      <a href="{% url 'marketing-contact' %}">Contact</a>
+
+      <ul>
+        <li><a href="{% url 'marketing-contact' %}">Contact</a></li>
+      </ul>
     </div>
 
-    <div class="content-wrapper">
+    <div class="content-container">
       <div class="content">
         {% block content %}{% endblock %}
       </div>
     </div>
 
-    <div class="footer">
-      <span>Copyright &copy; {{ today.year }} Hurriyah Ltd. Co. All rights reserved.</span> 
-      <a href="{% url 'legal-privacy_policy' %}">Privacy Policy</a>
-      <a href="{% url 'legal-terms_of_service' %}">Terms of Service</a>
+    <div class="pure-menu pure-menu-open pure-menu-horizontal">
+      <span class="pure-menu-heading">Copyright &copy; {{ today.year }} Hurriyah Ltd. Co. All rights reserved.</span>
+
+      <ul>
+        <li><a href="{% url 'legal-privacy_policy' %}">Privacy Policy</a></li>
+        <li><a href="{% url 'legal-terms_of_service' %}">Terms of Service</a></li>
+      </ul>
     </div>
 
     <script>
@@ -37,12 +53,12 @@
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
       m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
       })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-    
+
       ga('create', 'UA-53852583-1', 'auto');
       ga('require', 'displayfeatures');
       ga('require', 'linkid', 'linkid.js');
       ga('send', 'pageview');
-    
+
     </script>
   </body>
 </html>

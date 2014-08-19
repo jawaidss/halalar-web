@@ -1,74 +1,51 @@
-body {
-  background-color: #177daf;
-  color: #ffffff;
-  text-align: center;
+html, button, input, select, textarea,
+.pure-g [class *= "pure-u"] {
   font-family: Oswald;
+  text-align: center;
 }
 
-a {
-  color: #ffffff;
-}
-
-img {
-  max-width: 100%;
-}
-
-.header {
-  padding: 10px;
-}
-
-.header img {
-  width: 50px;
-  vertical-align: middle;
-}
-
-.header a {
-  font-size: 25px;
-  text-decoration: none;
-}
-
-.content-wrapper {
+.content-container {
   background-color: #ff9316;
-  color: #000000;
-  padding: 10px;
 }
 
 .content {
-  max-width: 1000px;
   margin: 0 auto;
+  max-width: 568px;
+}
+
+.pure-img {
+  display: inline;
+}
+
+.l-box {
+  padding: 1em;
+}
+
+.icon {
+  width: 50px;
 }
 
 .splash {
-  padding: 10px;
-}
-
-.splash img {
   width: 250px;
-}
-
-#mc_embed_signup {
-  width: 250px;
-  margin: 0 auto;
 }
 
 .download {
-  padding: 10px;
-}
-
-.download img {
   width: 250px;
-  vertical-align: middle;
-  padding: 5px 0;
 }
 
 .social {
-  padding: 10px;
-}
-
-.social img {
   width: 57px;
 }
 
-.footer {
-  padding: 10px;
+.pure-form {
+  text-align: left;
+}
+
+.errorlist {
+  list-style-type: none;
+  background-color: rgb(202, 60, 60);
+  color: #ffffff;
+  border-radius: 4px;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+  padding: .5em 1em;
 }

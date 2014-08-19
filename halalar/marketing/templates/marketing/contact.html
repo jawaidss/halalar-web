@@ -3,9 +3,25 @@
 {% block title %}{% block description %}Contact{% endblock %}{% endblock %}
 
 {% block content %}
-<form action="." method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <input type="submit" value="Submit">
-</form>
+<div class="pure-g">
+  <div class="pure-u-1 l-box">
+    <form class="pure-form pure-form-aligned" action="." method="post">
+      {% csrf_token %}
+
+      <fieldset>
+        {% for field in form %}
+          <div class="pure-control-group">
+            {{ field.label_tag }}
+            {{ field }}
+            {{ field.errors }}
+          </div>
+        {% endfor %}
+
+        <div class="pure-controls">
+          <button type="submit" class="pure-button pure-button-primary">Submit</button>
+        </div>
+      </fieldset>
+    </form>
+  </div>
+</div>
 {% endblock %}

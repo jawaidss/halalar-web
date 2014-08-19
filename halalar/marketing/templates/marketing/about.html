@@ -3,9 +3,10 @@
 {% block title %}{% block description %}About{% endblock %}{% endblock %}
 
 {% block content %}
-<div>
-  <img src="http://placehold.it/496x279" alt="Founders">
+<div class="pure-g">
+  <div class="pure-u-1 l-box">
+    <p><img class="pure-img" src="http://placehold.it/496x279" alt="Founders"></p>
+    <p>Salaam, I'm Sikander Chowhan, and I'm Samad Jawaid. Together, we're <a href="{% url 'marketing-home' %}">{{ site.name }}</a>. Please <a href="{% url 'marketing-contact' %}">{{ site.name }} at us</a>!</p>
+  </div>
 </div>
-
-<p>Salaam, I'm Sikander Chowhan, and I'm Samad Jawaid. Together, we're <a href="{% url 'marketing-home' %}">{{ site.name }}</a>. Please <a href="{% url 'marketing-contact' %}">{{ site.name }} at us</a>!</p>
 {% endblock %}
