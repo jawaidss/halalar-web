@@ -12,7 +12,9 @@ class ContactForm(forms.Form):
     message = forms.CharField(widget=forms.Textarea)
     captcha = CaptchaField()
 
-    def send_mail(self):
+    def send_mail(self, ip_address):
+        self.cleaned_data['ip_address'] = ip_address
+
         email_message = EmailMessage()
         email_message.subject = 'Message from %s' % self.cleaned_data['name']
         email_message.body = '''
@@ -20,6 +22,7 @@ Name: %(name)s
 Email address: %(email_address)s
 Phone number: %(phone_number)s
 Message: %(message)s
+IP address: %(ip_address)s
         '''.strip() % self.cleaned_data
         email_message.to = [settings.DEFAULT_FROM_EMAIL]
         email_message.send()

@@ -17,7 +17,7 @@ class ContactFormTestCase(TestCase):
         captcha_settings.CAPTCHA_TEST_MODE = True
         self.assertTrue(form.is_valid())
 
-        form.send_mail()
+        form.send_mail('127.0.0.1')
         self.assertEqual(len(mail.outbox), 1)
 
         message = mail.outbox[0]
@@ -26,7 +26,8 @@ class ContactFormTestCase(TestCase):
         self.assertEqual(message.body, '''Name: Samad
 Email address: samad@halalar.com
 Phone number: 
-Message: Salaam''')
+Message: Salaam
+IP address: 127.0.0.1''')
         self.assertEqual(message.from_email, settings.DEFAULT_FROM_EMAIL)
         self.assertEqual(message.to, [settings.DEFAULT_FROM_EMAIL])
         self.assertEqual(message.cc, [])
