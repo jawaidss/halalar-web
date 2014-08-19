@@ -40,6 +40,7 @@ INSTALLED_APPS = (
     'django.contrib.sitemaps',
     'django_nose',
     'defaultsite',
+    'captcha',
     'marketing',
     'legal',
 )
@@ -118,3 +119,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
+
+DEFAULT_FROM_EMAIL = '%s <salaam@%s>' % (SITE_NAME, SITE_DOMAIN)
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

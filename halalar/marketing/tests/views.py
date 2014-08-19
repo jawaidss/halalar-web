@@ -1,5 +1,10 @@
+from django.core import mail
 from django.core.urlresolvers import reverse
 from django.test import TestCase
+
+from captcha.conf import settings as captcha_settings
+
+from ..forms import ContactForm
 
 class HomeViewTestCase(TestCase):
     def test_home_view(self):
@@ -18,6 +23,24 @@ class ContactViewTestCase(TestCase):
         response = self.client.get(reverse('marketing-contact'))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'marketing/contact.html')
+        self.assertIsInstance(response.context['form'], ContactForm)
+        self.assertEqual(len(mail.outbox), 0)
+
+        response = self.client.post(reverse('marketing-contact'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'marketing/contact.html')
+        self.assertIsInstance(response.context['form'], ContactForm)
+        self.assertEqual(len(mail.outbox), 0)
+
+        captcha_settings.CAPTCHA_TEST_MODE = True
+        response = self.client.post(reverse('marketing-contact'),
+                                    data={'name': 'Samad',
+                                          'email_address': 'samad@halalar.com',
+                                          'message': 'Salaam',
+                                          'captcha_0': 'passed',
+                                          'captcha_1': 'passed'})
+        self.assertRedirects(response, reverse('marketing-thanks'))
+        self.assertEqual(len(mail.outbox), 1)
 
 class ThanksViewTestCase(TestCase):
     def test_thanks_view(self):
