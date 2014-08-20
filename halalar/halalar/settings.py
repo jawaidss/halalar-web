@@ -17,12 +17,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'vs=(w4f^h5bo+=#iiil4*&-@o%trp!-=21vxz$q^y(k2z5okzl'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'vs=(w4f^h5bo+=#iiil4*&-@o%trp!-=21vxz$q^y(k2z5okzl')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', True)
 
-TEMPLATE_DEBUG = True
+TEMPLATE_DEBUG = DEBUG
 
 ALLOWED_HOSTS = []
 
@@ -74,7 +74,7 @@ DATABASES = {
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Kentucky/Louisville'
 
 USE_I18N = True
 
@@ -113,7 +113,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.tz',
     'django.contrib.messages.context_processors.messages',
     'halalar.context_processors.site',
-    'halalar.context_processors.today',
 )
 
 STATICFILES_DIRS = (
@@ -122,3 +121,17 @@ STATICFILES_DIRS = (
 
 DEFAULT_FROM_EMAIL = '%s <salaam@%s>' % (SITE_NAME, SITE_DOMAIN)
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+SERVER_EMAIL = 'technical+django@%s' % SITE_DOMAIN
+
+ADMINS = (
+    (SITE_NAME, SERVER_EMAIL),
+)
+
+if not DEBUG:
+    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = True
+
+ALLOWED_HOSTS = [
+    '.%s' % SITE_DOMAIN,
+]
