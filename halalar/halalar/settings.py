@@ -17,7 +17,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY', 'vs=(w4f^h5bo+=#iiil4*&-@o%trp!-=21vxz$q^y(k2z5okzl')
+SECRET_KEY = os.environ.get('SECRET_KEY', 'temp123')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', True)
@@ -64,8 +64,10 @@ WSGI_APPLICATION = 'halalar.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'halalar',
+        'USER': 'halalar',
+        'PASSWORD': os.environ.get('DATABASE_PASSWORD', 'temp123'),
     }
 }
 
