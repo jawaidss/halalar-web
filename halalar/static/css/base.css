@@ -4,6 +4,10 @@ html, button, input, select, textarea,
   text-align: center;
 }
 
+a {
+  color: #ffffff;
+}
+
 .content-container {
   background-color: #ff9316;
 }

@@ -1,12 +1,19 @@
 {% extends 'marketing/base.html' %}
 
+{% load staticfiles %}
+
 {% block title %}{% block description %}About{% endblock %}{% endblock %}
 
 {% block content %}
 <div class="pure-g">
   <div class="pure-u-1 l-box">
-    <p><img class="pure-img" src="http://placehold.it/496x279" alt="Founders"></p>
-    <p>Salaam, I'm Sikander Chowhan, and I'm Samad Jawaid. Together, we're <a href="{% url 'marketing-home' %}">{{ site.name }}</a>. Please <a href="{% url 'marketing-contact' %}">{{ site.name }} at us</a>!</p>
+    <h1>About</h1>
+    <p>We're facing a marriage crisis. There are loads of eligible Muslims ready for marriage, but they just aren't aware of each other. They've been so busy preparing for this important step in their lives that they haven't even thought to establish these connections amongst themselves.</p>
+    <p>That's why we built <a href="{% url 'marketing-home' %}">{{ site.name }}</a>.</p>
+    <p><a href="{% url 'marketing-home' %}">{{ site.name }}</a> is a mobile application designed to connect you to other young, professional Muslims who are prepared for the Sunnah of marriage.</p>
+    <p><img class="pure-img" src="{% static 'img/founders.jpg' %}" alt="Founders"></p>
+    <p>We're Sikander Chowhan and <a href="http://www.samadjawaid.com">Samad Jawaid</a>, childhood friends and the creators of <a href="{% url 'marketing-home' %}">{{ site.name }}</a>. As twenty-something Muslim Americans of Pakistani-descent living in Kentucky, we've seen our fair share of friends and family struggling to find the peanut butter to their jelly. It doesn't help that the established resources for spousal connection tend to be either too cheesy or too extreme. This, as we have noticed, can be off-putting to the normal, young, professional Muslim dude or dudette. We thought it was time for a change so we created <a href="{% url 'marketing-home' %}">{{ site.name }}</a>: a proper and balanced forum for Muslims to connect and interact.</p>
+    <p>If you have any questions or comments, please <a href="{% url 'marketing-contact' %}">{{ site.name|lower }} at us</a>.</p>
   </div>
 </div>
 {% endblock %}

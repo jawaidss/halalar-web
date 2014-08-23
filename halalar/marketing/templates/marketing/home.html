@@ -3,19 +3,20 @@
 {% load staticfiles %}
 
 {% block title %}Home{% endblock %}
-{% block description %}lemme halalar atchu{% endblock %}
+{% block description %}A mobile app for halal hollering{% endblock %}
 
 {% block content %}
 <div class="pure-g">
   <div class="pure-u-1 pure-u-sm-1-2">
     <div class="l-box">
-      <img class="pure-img splash" src="{% static 'img/splash.png' %}" alt="lemme halalar atchu">
+      <img class="pure-img splash" src="{% static 'img/splash.png' %}" alt="{{ site.name }}">
     </div>
   </div>
 
   <div class="pure-u-1 pure-u-sm-1-2">
     <div class="l-box">
-      <h1>Halal hollering: coming soon!</h1>
+      <h1>A mobile app for halal hollering</h1>
+      <h2><a class="pure-button" href="{% url 'marketing-about' %}">Learn more &raquo;</a></h2>
 
       <!-- Begin MailChimp Signup Form -->
       <link rel="stylesheet" href="//cdn-images.mailchimp.com/embedcode/slim-081711.css">
