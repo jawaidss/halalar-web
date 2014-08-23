@@ -34,11 +34,17 @@ python manage.py runserver
 ## Testing
 
 ```bash
-python manage.py test marketing.tests legal.tests
+fab test
 ```
 
 ## Style
 
 ```bash
-flake8 .
+fab style
+```
+
+## Deploying
+
+```bash
+fab deploy
 ```
