@@ -40,6 +40,7 @@ INSTALLED_APPS = (
     'django.contrib.sitemaps',
     'django_nose',
     'defaultsite',
+    'djrill',
     'captcha',
     'marketing',
     'legal',
@@ -122,7 +123,6 @@ STATICFILES_DIRS = (
 )
 
 DEFAULT_FROM_EMAIL = '%s <salaam@%s>' % (SITE_NAME, SITE_DOMAIN)
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 SERVER_EMAIL = 'technical+django@%s' % SITE_DOMAIN
 
@@ -130,9 +130,13 @@ ADMINS = (
     (SITE_NAME, SERVER_EMAIL),
 )
 
-if not DEBUG:
+if DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+else:
     CSRF_COOKIE_SECURE = True
     SESSION_COOKIE_SECURE = True
+    MANDRILL_API_KEY = os.environ['MANDRILL_API_KEY']
+    EMAIL_BACKEND = 'djrill.mail.backends.djrill.DjrillBackend'
 
 ALLOWED_HOSTS = [
     '.%s' % SITE_DOMAIN,
