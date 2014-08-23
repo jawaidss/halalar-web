@@ -41,6 +41,7 @@ INSTALLED_APPS = (
     'django_nose',
     'defaultsite',
     'djrill',
+    'storages',
     'captcha',
     'marketing',
     'legal',
@@ -135,8 +136,14 @@ if DEBUG:
 else:
     CSRF_COOKIE_SECURE = True
     SESSION_COOKIE_SECURE = True
+
     MANDRILL_API_KEY = os.environ['MANDRILL_API_KEY']
     EMAIL_BACKEND = 'djrill.mail.backends.djrill.DjrillBackend'
+
+    AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
+    AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
+    AWS_STORAGE_BUCKET_NAME = 'halalar'
+    STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 
 ALLOWED_HOSTS = [
     '.%s' % SITE_DOMAIN,

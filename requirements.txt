@@ -1,10 +1,12 @@
 Django==1.6.5
 Pillow==2.5.3
+boto==2.32.1
 coverage==3.7.1
 django-defaultsite==1.1
 django-localflavor==1.0
 django-nose==1.2
 django-simple-captcha==0.4.2
+django-storages==1.1.8
 djrill==1.1.1
 flake8==2.2.2
 mccabe==0.2.1
