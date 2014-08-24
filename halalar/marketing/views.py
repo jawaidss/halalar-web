@@ -16,7 +16,7 @@ class ContactView(FormView):
     success_url = reverse_lazy('marketing-thanks')
 
     def form_valid(self, form):
-        form.send_mail(self.request.META['REMOTE_ADDR'])
+        form.send_mail(self.request.META.get('HTTP_X_FORWARDED_FOR', self.request.META['REMOTE_ADDR']))
         return super(ContactView, self).form_valid(form)
 
 class ThanksView(TemplateView):
