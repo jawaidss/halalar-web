@@ -12,6 +12,7 @@ urlpatterns = patterns('',
     url(r'^marketing/', include('marketing.urls')),
     url(r'^legal/', include('legal.urls')),
     url(r'^captcha/', include('captcha.urls')),
+    url(r'^api/', include('api.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^sitemap\.xml$', 'django.contrib.sitemaps.views.sitemap', {'sitemaps': sitemaps}),
 )

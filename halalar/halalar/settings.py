@@ -43,8 +43,10 @@ INSTALLED_APPS = (
     'djrill',
     'storages',
     'captcha',
+    'django_countries',
     'marketing',
     'legal',
+    'api',
 )
 
 MIDDLEWARE_CLASSES = (
