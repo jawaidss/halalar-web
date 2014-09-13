@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.core import mail
 from django.core.urlresolvers import reverse
 from django.test import TestCase
@@ -50,9 +51,9 @@ class ThanksViewTestCase(TestCase):
 
 class AdminTestCase(TestCase):
     def test_admin(self):
-        response = self.client.get(reverse('admin:index'))
+        response = self.client.get(reverse('admin:index'), follow=True)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'admin/base_site.html')
+        self.assertContains(response, settings.SITE_NAME, count=2)
 
 class SitemapTestCase(TestCase):
     def test_sitemap(self):
