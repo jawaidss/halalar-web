@@ -44,6 +44,7 @@ INSTALLED_APPS = (
     'storages',
     'captcha',
     'django_countries',
+    'django_extensions',
     'marketing',
     'legal',
     'api',
