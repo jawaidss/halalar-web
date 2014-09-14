@@ -3,7 +3,10 @@ import hashlib
 import random
 
 from django.contrib.auth.models import User
+from django.core.validators import MinValueValidator
 from django.db import models
+
+MINIMUM_AGE = 18
 
 def _random_token(username):
     salt = hashlib.sha1(str(random.random())).hexdigest()[:5]
@@ -18,7 +21,7 @@ class Profile(models.Model):
     )
     user = models.OneToOneField(User)
     token = models.CharField(max_length=40, unique=True, editable=False)
-    age = models.SmallIntegerField()
+    age = models.SmallIntegerField(validators=[MinValueValidator(MINIMUM_AGE)])
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
     city = models.CharField(max_length=100)
     country = CountryField(default='US')
