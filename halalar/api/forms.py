@@ -31,3 +31,11 @@ class ProfileForm(forms.ModelForm):
         super(ProfileForm, self).__init__(*args, **kwargs)
         self.fields['self'] = self.fields['selfx']
         del self.fields['selfx']
+
+    def clean(self):
+        cleaned_data = super(ProfileForm, self).clean()
+
+        if 'self' in cleaned_data:
+            cleaned_data['selfx'] = cleaned_data.pop('self')
+
+        return cleaned_data
