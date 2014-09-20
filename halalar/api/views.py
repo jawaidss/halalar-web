@@ -1,23 +1,30 @@
 from braces.views import CsrfExemptMixin, JSONResponseMixin
 
-from django.contrib.auth.forms import AuthenticationForm
 from django.views.generic import View
 
-from .forms import UserForm, ProfileForm
+from .forms import UserForm, ProfileForm, AuthenticationForm
+from .models import Profile
 
 class API(CsrfExemptMixin, JSONResponseMixin, View):
-    pass
+    def success(data):
+        return self.render_json_response({'status': 'success', 'data': data})
+
+    def error(message):
+        return self.render_json_response({'status': 'error', 'message': message})
 
 class LogInAPI(API):
     def post(self, request, *args, **kwargs):
         form = AuthenticationForm(data=request.POST)
 
         if form.is_valid():
-            token = form.get_user().profile.token # TODO: Profile.DoesNotExist
-
-            return self.render_json_response({'token': token})
+            try:
+                profile = form.get_user().profile
+            except Profile.DoesNotExist:
+                return self.error('') # TODO
+            else:
+                return self.success({'token': profile.token})
         else:
-            return self.render_json_response(form.errors)
+            return self.error(form.error_message())
 
 class SignUpAPI(API):
     def post(self, request, *args, **kwargs):
@@ -29,11 +36,14 @@ class SignUpAPI(API):
             profile = profile_form.save(commit=False)
             profile.user = user
             profile.save()
+            # TODO
+            # 1) Send emails to admins.
+            # 2) Send delayed email to user.
+            # 3) Add user to MailChimp list.
 
-            return self.render_json_response({'token': profile.token})
+            return self.success({'token': profile.token})
         else:
-            errors = {}
-            errors.update(user_form.errors)
-            errors.update(profile_form.errors)
+            error_messages = [user_form.error_message(), profile_form.error_message()]
+            error_message = '\n'.join(error_messages).strip()
 
-            return self.render_json_response(errors)
+            return self.error(error_message)

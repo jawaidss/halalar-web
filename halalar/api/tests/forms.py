@@ -1,7 +1,15 @@
 from django.test import TestCase
 
 from . import TEST_DATA
-from ..forms import UserForm, ProfileForm
+from ..forms import AuthenticationForm, UserForm, ProfileForm
+
+class AuthenticationFormTestCase(TestCase):
+    def test(self):
+        form = AuthenticationForm(data={'username': TEST_DATA['username'],
+                                        'password': TEST_DATA['password']})
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors, {'__all__': ['Please enter a correct username and password. Note that both fields may be case-sensitive.']})
+        self.assertEqual(form.error_message(), 'Please enter a correct username and password. Note that both fields may be case-sensitive.')
 
 class UserFormTestCase(TestCase):
     def test(self):
@@ -10,6 +18,7 @@ class UserFormTestCase(TestCase):
         self.assertEqual(form.errors, {'username': ['This field is required.'],
                                        'password': ['This field is required.'],
                                        'email': ['This field is required.']})
+        self.assertEqual(form.error_message(), 'email: This field is required.\npassword: This field is required.\nusername: This field is required.')
 
     def test_save(self):
         form = UserForm({'username': TEST_DATA['username'],
@@ -49,6 +58,7 @@ class ProfileFormTestCase(TestCase):
                                        'gender': ['Select a valid choice. foo is not one of the available choices.'],
                                        'religion': ['This field is required.'],
                                        'self': ['This field is required.']})
+        self.assertEqual(form.error_message(), 'age: Ensure this value is greater than or equal to 18.\ncareer: This field is required.\ncity: This field is required.\ncommunity: This field is required.\ncountry: Select a valid choice. XX is not one of the available choices.\nfamily: This field is required.\ngender: Select a valid choice. foo is not one of the available choices.\nreligion: This field is required.\nself: This field is required.')
 
     def test_save(self):
         form = ProfileForm({'age': TEST_DATA['age'],

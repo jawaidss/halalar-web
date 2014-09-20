@@ -1,9 +1,25 @@
 from django import forms
+from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
 
 from .models import Profile
 
-class UserForm(forms.ModelForm):
+class APIForm(object):
+    def error_message(self):
+        message = []
+
+        for field, errors in sorted(self.errors.items()):
+            if field == '__all__':
+                message.append(' '.join(errors))
+            else:
+                message.append('%s: %s' % (field, ' '.join(errors)))
+
+        return '\n'.join(message)
+
+class AuthenticationForm(APIForm, AuthenticationForm):
+    pass
+
+class UserForm(APIForm, forms.ModelForm):
     password = forms.CharField()
 
     class Meta:
@@ -21,7 +37,7 @@ class UserForm(forms.ModelForm):
 
         return user
 
-class ProfileForm(forms.ModelForm):
+class ProfileForm(APIForm, forms.ModelForm):
     class Meta:
         model = Profile
         fields = ['age', 'gender', 'city', 'country',
