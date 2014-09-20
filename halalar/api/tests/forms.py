@@ -1,5 +1,6 @@
 from django.test import TestCase
 
+from . import TEST_DATA
 from ..forms import UserForm, ProfileForm
 
 class UserFormTestCase(TestCase):
@@ -11,15 +12,15 @@ class UserFormTestCase(TestCase):
                                        'email': ['This field is required.']})
 
     def test_save(self):
-        form = UserForm({'username': 'samad',
-                         'password': 'temp123',
-                         'email': 'samad@halalar.com'})
+        form = UserForm({'username': TEST_DATA['username'],
+                         'password': TEST_DATA['password'],
+                         'email': TEST_DATA['email']})
         self.assertTrue(form.is_valid())
 
         user = form.save()
-        self.assertEqual(user.username, 'samad')
-        self.assertTrue(user.check_password('temp123'))
-        self.assertEqual(user.email, 'samad@halalar.com')
+        self.assertEqual(user.username, TEST_DATA['username'])
+        self.assertTrue(user.check_password(TEST_DATA['password']))
+        self.assertEqual(user.email, TEST_DATA['email'])
 
 class ProfileFormTestCase(TestCase):
     def test(self):
@@ -50,24 +51,24 @@ class ProfileFormTestCase(TestCase):
                                        'self': ['This field is required.']})
 
     def test_save(self):
-        form = ProfileForm({'age': 23,
-                            'career': 'test',
-                            'city': 'Louisville',
-                            'community': 'test',
-                            'country': 'US',
-                            'family': 'test',
-                            'gender': 'male',
-                            'religion': 'test',
-                            'self': 'test'})
+        form = ProfileForm({'age': TEST_DATA['age'],
+                            'career': TEST_DATA['career'],
+                            'city': TEST_DATA['city'],
+                            'community': TEST_DATA['community'],
+                            'country': TEST_DATA['country'],
+                            'family': TEST_DATA['family'],
+                            'gender': TEST_DATA['gender'],
+                            'religion': TEST_DATA['religion'],
+                            'self': TEST_DATA['self']})
         self.assertTrue(form.is_valid())
 
         profile = form.save(commit=False)
-        self.assertEqual(profile.age, 23)
-        self.assertEqual(profile.career, 'test')
-        self.assertEqual(profile.city, 'Louisville')
-        self.assertEqual(profile.community, 'test')
-        self.assertEqual(profile.country, 'US')
-        self.assertEqual(profile.family, 'test')
-        self.assertEqual(profile.gender, 'male')
-        self.assertEqual(profile.religion, 'test')
-        self.assertEqual(profile.selfx, 'test')
+        self.assertEqual(profile.age, TEST_DATA['age'])
+        self.assertEqual(profile.career, TEST_DATA['career'])
+        self.assertEqual(profile.city, TEST_DATA['city'])
+        self.assertEqual(profile.community, TEST_DATA['community'])
+        self.assertEqual(profile.country, TEST_DATA['country'])
+        self.assertEqual(profile.family, TEST_DATA['family'])
+        self.assertEqual(profile.gender, TEST_DATA['gender'])
+        self.assertEqual(profile.religion, TEST_DATA['religion'])
+        self.assertEqual(profile.selfx, TEST_DATA['self'])
