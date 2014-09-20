@@ -1,10 +1,9 @@
 import json
 
-from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 
-from . import TEST_DATA
+from . import TEST_DATA, create_user, create_profile
 from ..models import Profile
 
 class LogInAPITestCase(TestCase):
@@ -16,30 +15,19 @@ class LogInAPITestCase(TestCase):
                                                         'status': 'error'})
 
     def test_log_in_api_valid(self):
-        user = User.objects.create_user(TEST_DATA['username'],
-                                        email=TEST_DATA['email'],
-                                        password=TEST_DATA['password'])
+        user = create_user()
 
-        response = self.client.post(reverse('api-log_in'), data={'username': TEST_DATA['username'],
-                                                                 'password': TEST_DATA['password']})
+        response = self.client.post(reverse('api-log_in'), {'username': TEST_DATA[0]['username'],
+                                                            'password': TEST_DATA[0]['password']})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response['Content-Type'], 'application/json')
         self.assertEqual(json.loads(response.content), {'message': '',
                                                         'status': 'error'})
 
-        profile = Profile.objects.create(user=user,
-                                         age=TEST_DATA['age'],
-                                         gender=TEST_DATA['gender'],
-                                         city=TEST_DATA['city'],
-                                         country=TEST_DATA['country'],
-                                         religion=TEST_DATA['religion'],
-                                         family=TEST_DATA['family'],
-                                         selfx=TEST_DATA['self'],
-                                         community=TEST_DATA['community'],
-                                         career=TEST_DATA['career'])
+        profile = create_profile(user)
 
-        response = self.client.post(reverse('api-log_in'), data={'username': TEST_DATA['username'],
-                                                                 'password': TEST_DATA['password']})
+        response = self.client.post(reverse('api-log_in'), {'username': TEST_DATA[0]['username'],
+                                                            'password': TEST_DATA[0]['password']})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response['Content-Type'], 'application/json')
         self.assertEqual(json.loads(response.content), {'data': {'token': profile.token},
@@ -54,8 +42,70 @@ class SignUpAPITestCase(TestCase):
                                                         'status': 'error'})
 
     def test_sign_up_api_valid(self):
-        response = self.client.post(reverse('api-sign_up'), data=TEST_DATA)
+        response = self.client.post(reverse('api-sign_up'), TEST_DATA[0])
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response['Content-Type'], 'application/json')
         self.assertEqual(json.loads(response.content), {'data': {'token': Profile.objects.get().token},
+                                                        'status': 'success'})
+
+class GetProfileAPITestCase(TestCase):
+    def setUp(self):
+        user = create_user()
+        self.profile = create_profile(user)
+
+    def test_get_profile_api_invalid(self):
+        response = self.client.get(reverse('api-get_profile'))
+        self.assertEqual(response.status_code, 404)
+
+    def test_get_profile_api_valid(self):
+        response = self.client.get(reverse('api-get_profile'), {'token': self.profile.token})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response['Content-Type'], 'application/json')
+        self.assertEqual(json.loads(response.content), {'data': {'profile': self.profile.serialize()},
+                                                        'status': 'success'})
+
+    def test_get_random_profile_api_invalid(self):
+        response = self.client.get(reverse('api-get_random_profile'))
+        self.assertEqual(response.status_code, 404)
+
+        response = self.client.get(reverse('api-get_random_profile'), {'token': self.profile.token})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response['Content-Type'], 'application/json')
+        self.assertEqual(json.loads(response.content), {'message': '',
+                                                        'status': 'error'})
+
+    def test_get_random_profile_api_valid(self):
+        user = create_user(1)
+        profile = create_profile(user, 1)
+
+        response = self.client.get(reverse('api-get_random_profile'), {'token': self.profile.token})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response['Content-Type'], 'application/json')
+        self.assertEqual(json.loads(response.content), {'data': {'profile': profile.serialize(False)},
+                                                        'status': 'success'})
+
+    def test_get_specific_profile_api_invalid(self):
+        response = self.client.get(reverse('api-get_specific_profile', kwargs={'username': self.profile.user.username}))
+        self.assertEqual(response.status_code, 404)
+
+        response = self.client.get(reverse('api-get_specific_profile', kwargs={'username': self.profile.user.username}), {'token': self.profile.token})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response['Content-Type'], 'application/json')
+        self.assertEqual(json.loads(response.content), {'message': '',
+                                                        'status': 'error'})
+
+        user = create_user(1)
+        profile = create_profile(user, 1)
+
+        response = self.client.get(reverse('api-get_specific_profile', kwargs={'username': self.profile.user.username}), {'token': self.profile.token})
+        self.assertEqual(response.status_code, 404)
+
+    def test_get_specific_profile_api_valid(self):
+        user = create_user(1)
+        profile = create_profile(user, 1)
+
+        response = self.client.get(reverse('api-get_specific_profile', kwargs={'username': user.username}), {'token': self.profile.token})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response['Content-Type'], 'application/json')
+        self.assertEqual(json.loads(response.content), {'data': {'profile': profile.serialize(False)},
                                                         'status': 'success'})

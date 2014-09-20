@@ -1,5 +1,6 @@
 from braces.views import CsrfExemptMixin, JSONResponseMixin
 
+from django.shortcuts import get_object_or_404
 from django.views.generic import View
 
 from .forms import UserForm, ProfileForm, AuthenticationForm
@@ -47,3 +48,28 @@ class SignUpAPI(API):
             error_message = '\n'.join(error_messages).strip()
 
             return self.error(error_message)
+
+class AuthenticatedAPI(API):
+    def dispatch(self, request, *args, **kwargs):
+        profile = get_object_or_404(Profile, token=getattr(request, request.method, {}).get('token'))
+
+        return super(AuthenticatedAPI, self).dispatch(request, profile, *args, **kwargs)
+
+class GetProfileAPI(AuthenticatedAPI):
+    random = False
+
+    def get(self, request, profile, *args, **kwargs):
+        if self.random:
+            profiles = Profile.objects.exclude(gender=profile.gender) # TODO
+
+            if profiles.exists():
+                username = self.kwargs.get('username')
+
+                if username is None:
+                    profile = profiles.order_by('?')[0]
+                else:
+                    profile = get_object_or_404(profiles, user__username=username)
+            else:
+                return self.error('') # TODO
+
+        return self.success({'profile': profile.serialize(not self.random)})

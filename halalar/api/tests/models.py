@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.test import TestCase
 
+from . import TEST_DATA, create_user, create_profile
 from ..models import Profile
 
 class ProfileTestCase(TestCase):
@@ -35,3 +36,24 @@ class ProfileTestCase(TestCase):
         profile = Profile(user=user, age=0, token='token')
         profile.save()
         self.assertEqual(profile.token, 'token')
+
+    def test_serialize(self):
+        user = create_user()
+        profile = create_profile(user)
+        expected = {'age': TEST_DATA[0]['age'],
+                    'career': TEST_DATA[0]['career'],
+                    'city': TEST_DATA[0]['city'],
+                    'community': TEST_DATA[0]['community'],
+                    'country': TEST_DATA[0]['country'],
+                    'email': TEST_DATA[0]['email'],
+                    'family': TEST_DATA[0]['family'],
+                    'gender': TEST_DATA[0]['gender'].capitalize(),
+                    'religion': TEST_DATA[0]['religion'],
+                    'self': TEST_DATA[0]['self'],
+                    'username': TEST_DATA[0]['username']}
+
+        self.assertEqual(profile.serialize(), expected)
+
+        del expected['email']
+
+        self.assertEqual(profile.serialize(False), expected)

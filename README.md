@@ -20,7 +20,7 @@ sudo su postgres -c "createuser -P halalar"
 sudo su postgres -c 'psql -c "ALTER USER halalar CREATEDB;"'
 sudo su postgres -c 'psql -c "GRANT ALL PRIVILEGES ON DATABASE halalar TO halalar;"'
 cd halalar
-python manage.py syncdb --noinput
+python manage.py migrate
 ```
 
 ## Usage

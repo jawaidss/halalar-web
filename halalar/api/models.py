@@ -43,6 +43,23 @@ class Profile(models.Model):
 
         super(Profile, self).save(**kwargs)
 
+    def serialize(self, include_email=True):
+        data = {'username': self.user.username,
+                'age': self.age,
+                'gender': self.get_gender_display(),
+                'city': self.city,
+                'country': self.country.code,
+                'religion': self.religion,
+                'family': self.family,
+                'self': self.selfx,
+                'community': self.community,
+                'career': self.career}
+
+        if include_email:
+            data['email'] = self.user.email
+
+        return data
+
 class Message(models.Model):
     sender = models.ForeignKey(Profile, related_name='sent')
     recipient = models.ForeignKey(Profile, related_name='received')
