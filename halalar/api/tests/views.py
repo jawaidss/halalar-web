@@ -44,3 +44,18 @@ class LogInAPITestCase(TestCase):
         self.assertEqual(response['Content-Type'], 'application/json')
         self.assertEqual(json.loads(response.content), {'data': {'token': profile.token},
                                                         'status': 'success'})
+
+class SignUpAPITestCase(TestCase):
+    def test_sign_up_api_invalid(self):
+        response = self.client.post(reverse('api-sign_up'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response['Content-Type'], 'application/json')
+        self.assertEqual(json.loads(response.content), {'message': 'email: This field is required.\npassword: This field is required.\nusername: This field is required.\nage: This field is required.\ncareer: This field is required.\ncity: This field is required.\ncommunity: This field is required.\ncountry: This field is required.\nfamily: This field is required.\ngender: This field is required.\nreligion: This field is required.\nself: This field is required.',
+                                                        'status': 'error'})
+
+    def test_sign_up_api_valid(self):
+        response = self.client.post(reverse('api-sign_up'), data=TEST_DATA)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response['Content-Type'], 'application/json')
+        self.assertEqual(json.loads(response.content), {'data': {'token': Profile.objects.get().token},
+                                                        'status': 'success'})
