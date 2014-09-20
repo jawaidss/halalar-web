@@ -6,10 +6,10 @@ from .forms import UserForm, ProfileForm, AuthenticationForm
 from .models import Profile
 
 class API(CsrfExemptMixin, JSONResponseMixin, View):
-    def success(data):
+    def success(self, data):
         return self.render_json_response({'status': 'success', 'data': data})
 
-    def error(message):
+    def error(self, message):
         return self.render_json_response({'status': 'error', 'message': message})
 
 class LogInAPI(API):
