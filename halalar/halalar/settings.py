@@ -39,7 +39,6 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.sitemaps',
     'django_nose',
-    'defaultsite',
     'djrill',
     'storages',
     'captcha',
@@ -101,6 +100,7 @@ NOSE_ARGS = [
     '--with-coverage',
     '--cover-package=marketing,legal,api',
     '--cover-html',
+    '--nocapture',
 ]
 
 TEMPLATE_DIRS = (

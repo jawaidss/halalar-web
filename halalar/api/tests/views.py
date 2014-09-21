@@ -94,8 +94,7 @@ class GetProfileAPITestCase(TestCase):
         self.assertEqual(json.loads(response.content), {'message': '',
                                                         'status': 'error'})
 
-        user = create_user(1)
-        profile = create_profile(user, 1)
+        create_profile(create_user(1), 1)
 
         response = self.client.get(reverse('api-get_specific_profile', kwargs={'username': self.profile.user.username}), {'token': self.profile.token})
         self.assertEqual(response.status_code, 404)

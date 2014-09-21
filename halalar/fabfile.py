@@ -6,7 +6,7 @@ def test():
     local('python manage.py test marketing.tests legal.tests api.tests')
 
 def style():
-    local('flake8 .')
+    local('flake8 . --ignore=E261,W292,E302,E501')
 
 def deploy():
     with cd('/srv/halalar-web'):
