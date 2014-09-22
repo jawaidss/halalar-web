@@ -1,7 +1,9 @@
 from braces.views import CsrfExemptMixin, JSONResponseMixin
 
 from django.shortcuts import get_object_or_404
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
+from django.utils.decorators import method_decorator
 
 from .forms import UserForm, ProfileForm, AuthenticationForm
 from .models import Profile
@@ -50,6 +52,7 @@ class SignUpAPI(API):
             return self.error(error_message)
 
 class AuthenticatedAPI(API):
+    @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):
         profile = get_object_or_404(Profile, token=getattr(request, request.method, {}).get('token'))
 
@@ -73,3 +76,15 @@ class GetProfileAPI(AuthenticatedAPI):
                 return self.error('') # TODO
 
         return self.success({'profile': profile.serialize(not self.random)})
+
+class EditProfileAPI(AuthenticatedAPI):
+    def post(self, request, profile, *args, **kwargs):
+        form = ProfileForm(request.POST, instance=profile)
+        del form.fields['gender'] # TODO
+
+        if form.is_valid():
+            profile = form.save()
+
+            return self.success({'profile': profile.serialize()})
+        else:
+            return self.error(form.error_message())

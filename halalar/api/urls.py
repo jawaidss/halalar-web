@@ -8,4 +8,5 @@ urlpatterns = [
     url(r'^get-profile/$', views.GetProfileAPI.as_view(), name='api-get_profile'),
     url(r'^get-profile/random/$', views.GetProfileAPI.as_view(random=True), name='api-get_random_profile'),
     url(r'^get-profile/random/(?P<username>\w+)/$', views.GetProfileAPI.as_view(random=True), name='api-get_specific_profile'),
+    url(r'^edit-profile/$', views.EditProfileAPI.as_view(), name='api-edit_profile'),
 ]

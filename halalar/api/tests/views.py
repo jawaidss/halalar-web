@@ -108,3 +108,37 @@ class GetProfileAPITestCase(TestCase):
         self.assertEqual(response['Content-Type'], 'application/json')
         self.assertEqual(json.loads(response.content), {'data': {'profile': profile.serialize(False)},
                                                         'status': 'success'})
+
+class EditProfileAPITestCase(TestCase):
+    def setUp(self):
+        user = create_user()
+        self.profile = create_profile(user)
+
+    def test_edit_profile_api_invalid(self):
+        response = self.client.post(reverse('api-edit_profile'))
+        self.assertEqual(response.status_code, 404)
+
+        response = self.client.post(reverse('api-edit_profile'), {'token': self.profile.token})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response['Content-Type'], 'application/json')
+        self.assertEqual(json.loads(response.content), {'message': 'age: This field is required.\ncareer: This field is required.\ncity: This field is required.\ncommunity: This field is required.\ncountry: This field is required.\nfamily: This field is required.\nreligion: This field is required.\nself: This field is required.',
+                                                        'status': 'error'})
+
+    def test_edit_profile_api_valid(self):
+        data = {'token': self.profile.token}
+        data.update(TEST_DATA[1])
+        response = self.client.post(reverse('api-edit_profile'), data)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response['Content-Type'], 'application/json')
+        profile = Profile.objects.get()
+        self.assertEqual(json.loads(response.content), {'data': {'profile': profile.serialize()},
+                                                        'status': 'success'})
+        self.assertEqual(profile.age, TEST_DATA[1]['age'])
+        self.assertEqual(profile.career, TEST_DATA[1]['career'])
+        self.assertEqual(profile.city, TEST_DATA[1]['city'])
+        self.assertEqual(profile.community, TEST_DATA[1]['community'])
+        self.assertEqual(profile.country, TEST_DATA[1]['country'])
+        self.assertEqual(profile.family, TEST_DATA[1]['family'])
+        self.assertEqual(profile.religion, TEST_DATA[1]['religion'])
+        self.assertEqual(profile.selfx, TEST_DATA[1]['self'])
+        self.assertNotEqual(profile.gender, TEST_DATA[1]['gender'])
