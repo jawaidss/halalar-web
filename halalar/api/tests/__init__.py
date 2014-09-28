@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 
-from ..models import Profile
+from ..models import Profile, Message
 
 TEST_DATA = [{'age': 23,
               'career': 'Sustainable tofu DIY asymmetrical meggings Pitchfork, actually master cleanse pickled.',
@@ -27,6 +27,8 @@ TEST_DATA = [{'age': 23,
               'self': 'Pug cardigan Blue Bottle drinking vinegar Tonx.',
               'username': 'monica'}]
 
+BODY = 'Salaam'
+
 def create_user(i=0):
     return User.objects.create_user(TEST_DATA[i]['username'],
                                     email=TEST_DATA[i]['email'],
@@ -43,6 +45,11 @@ def create_profile(user, i=0):
                                   selfx=TEST_DATA[i]['self'],
                                   community=TEST_DATA[i]['community'],
                                   career=TEST_DATA[i]['career'])
+
+def create_message(sender, recipient):
+    return Message.objects.create(sender=sender,
+                                  recipient=recipient,
+                                  body=BODY)
 
 from forms import *
 from models import *

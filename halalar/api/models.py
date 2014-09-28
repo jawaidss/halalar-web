@@ -3,6 +3,7 @@ import hashlib
 import random
 
 from django.contrib.auth.models import User
+from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.core.validators import MinValueValidator
 from django.db import models
 
@@ -68,6 +69,13 @@ class Message(models.Model):
 
     class Meta:
         ordering = ['timestamp']
+        get_latest_by = 'timestamp'
 
     def __unicode__(self):
         return self.body
+
+    def serialize(self):
+        return {'sender': self.sender.user.username,
+                'recipient': self.recipient.user.username,
+                'timestamp': naturaltime(self.timestamp),
+                'body': self.body}

@@ -9,4 +9,7 @@ urlpatterns = [
     url(r'^get-profile/random/$', views.GetProfileAPI.as_view(random=True), name='api-get_random_profile'),
     url(r'^get-profile/random/(?P<username>\w+)/$', views.GetProfileAPI.as_view(random=True), name='api-get_specific_profile'),
     url(r'^edit-profile/$', views.EditProfileAPI.as_view(), name='api-edit_profile'),
+    url(r'^get-conversations/$', views.GetConversationsAPI.as_view(), name='api-get_conversations'),
+    url(r'^get-conversation/(?P<username>\w+)/$', views.GetConversationAPI.as_view(), name='api-get_conversation'),
+    url(r'^send-message/(?P<username>\w+)/$', views.SendMessageAPI.as_view(), name='api-send_message'),
 ]

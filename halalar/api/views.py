@@ -1,12 +1,13 @@
 from braces.views import CsrfExemptMixin, JSONResponseMixin
 
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
 from django.utils.decorators import method_decorator
 
-from .forms import UserForm, ProfileForm, AuthenticationForm
-from .models import Profile
+from .forms import UserForm, ProfileForm, AuthenticationForm, MessageForm
+from .models import Profile, Message
 
 class API(CsrfExemptMixin, JSONResponseMixin, View):
     def success(self, data):
@@ -63,7 +64,7 @@ class GetProfileAPI(AuthenticatedAPI):
 
     def get(self, request, profile, *args, **kwargs):
         if self.random:
-            profiles = Profile.objects.exclude(gender=profile.gender) # TODO
+            profiles = Profile.objects.exclude(gender=profile.gender)
 
             if profiles.exists():
                 username = self.kwargs.get('username')
@@ -80,11 +81,56 @@ class GetProfileAPI(AuthenticatedAPI):
 class EditProfileAPI(AuthenticatedAPI):
     def post(self, request, profile, *args, **kwargs):
         form = ProfileForm(request.POST, instance=profile)
-        del form.fields['gender'] # TODO
 
         if form.is_valid():
             profile = form.save()
 
             return self.success({'profile': profile.serialize()})
+        else:
+            return self.error(form.error_message())
+
+class GetConversationsAPI(AuthenticatedAPI):
+    def get(self, request, profile, *args, **kwargs):
+        sent = set(profile.sent.values_list('recipient__user__username', flat=True))
+        received = set(profile.received.values_list('sender__user__username', flat=True))
+        pks = []
+
+        for username in sent | received:
+            q = Q(recipient__user__username=username, sender=profile) |\
+                Q(sender__user__username=username, recipient=profile)
+            pk = Message.objects.filter(q).latest().pk
+            pks.append(pk)
+
+        messages = Message.objects.filter(pk__in=pks)
+        messages = [message.serialize() for message in messages]
+
+        return self.success({'messages': messages})
+
+class GetConversationAPI(AuthenticatedAPI):
+    def get(self, request, profile, *args, **kwargs):
+        username = self.kwargs['username']
+        q = Q(recipient__user__username=username, sender=profile) |\
+            Q(sender__user__username=username, recipient=profile)
+        messages = Message.objects.filter(q)
+        messages = [message.serialize() for message in messages]
+
+        return self.success({'messages': messages})
+
+class SendMessageAPI(AuthenticatedAPI):
+    def post(self, request, profile, *args, **kwargs):
+        profiles = Profile.objects.exclude(gender=profile.gender)
+        username = self.kwargs['username']
+        recipient = get_object_or_404(profiles, user__username=username)
+        form = MessageForm(data=request.POST)
+
+        # TODO: must be the first message or a reply
+
+        if form.is_valid():
+            message = form.save(commit=False)
+            message.sender = profile
+            message.recipient = recipient
+            message.save()
+
+            return self.success({'message': message.serialize()})
         else:
             return self.error(form.error_message())

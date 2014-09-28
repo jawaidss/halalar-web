@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
 
-from .models import Profile
+from .models import Profile, Message
 
 class APIForm(object):
     def error_message(self):
@@ -48,6 +48,9 @@ class ProfileForm(APIForm, forms.ModelForm):
         self.fields['self'] = self.fields['selfx']
         del self.fields['selfx']
 
+        if kwargs.get('instance') is not None:
+            del self.fields['gender']
+
     def clean(self):
         cleaned_data = super(ProfileForm, self).clean()
 
@@ -55,3 +58,8 @@ class ProfileForm(APIForm, forms.ModelForm):
             cleaned_data['selfx'] = cleaned_data.pop('self')
 
         return cleaned_data
+
+class MessageForm(APIForm, forms.ModelForm):
+    class Meta:
+        model = Message
+        fields = ['body']

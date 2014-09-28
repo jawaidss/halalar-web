@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.test import TestCase
 
-from . import TEST_DATA, create_user, create_profile
+from . import TEST_DATA, BODY, create_user, create_profile, create_message
 from ..models import Profile
 
 class ProfileTestCase(TestCase):
@@ -57,3 +57,16 @@ class ProfileTestCase(TestCase):
         del expected['email']
 
         self.assertEqual(profile.serialize(False), expected)
+
+class MessageTestCase(TestCase):
+    def test_serialize(self):
+        sender = create_profile(create_user())
+        recipient = create_profile(create_user(1), 1)
+        message = create_message(sender, recipient)
+
+        expected = {'sender': TEST_DATA[0]['username'],
+                    'recipient': TEST_DATA[1]['username'],
+                    'timestamp': 'now',
+                    'body': BODY}
+
+        self.assertEqual(message.serialize(), expected)

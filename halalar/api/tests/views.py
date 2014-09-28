@@ -3,8 +3,8 @@ import json
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 
-from . import TEST_DATA, create_user, create_profile
-from ..models import Profile
+from . import TEST_DATA, BODY, create_user, create_profile, create_message
+from ..models import Profile, Message
 
 class LogInAPITestCase(TestCase):
     def test_log_in_api_invalid(self):
@@ -48,11 +48,12 @@ class SignUpAPITestCase(TestCase):
         self.assertEqual(json.loads(response.content), {'data': {'token': Profile.objects.get().token},
                                                         'status': 'success'})
 
-class GetProfileAPITestCase(TestCase):
+class AuthenticatedAPITestCase(TestCase):
     def setUp(self):
         user = create_user()
         self.profile = create_profile(user)
 
+class GetProfileAPITestCase(AuthenticatedAPITestCase):
     def test_get_profile_api_invalid(self):
         response = self.client.get(reverse('api-get_profile'))
         self.assertEqual(response.status_code, 404)
@@ -109,11 +110,7 @@ class GetProfileAPITestCase(TestCase):
         self.assertEqual(json.loads(response.content), {'data': {'profile': profile.serialize(False)},
                                                         'status': 'success'})
 
-class EditProfileAPITestCase(TestCase):
-    def setUp(self):
-        user = create_user()
-        self.profile = create_profile(user)
-
+class EditProfileAPITestCase(AuthenticatedAPITestCase):
     def test_edit_profile_api_invalid(self):
         response = self.client.post(reverse('api-edit_profile'))
         self.assertEqual(response.status_code, 404)
@@ -142,3 +139,91 @@ class EditProfileAPITestCase(TestCase):
         self.assertEqual(profile.religion, TEST_DATA[1]['religion'])
         self.assertEqual(profile.selfx, TEST_DATA[1]['self'])
         self.assertNotEqual(profile.gender, TEST_DATA[1]['gender'])
+
+class GetConversationsAPITestCase(AuthenticatedAPITestCase):
+    def test_get_conversations_api_invalid(self):
+        response = self.client.get(reverse('api-get_conversations'))
+        self.assertEqual(response.status_code, 404)
+
+    def test_get_conversations_api_valid(self):
+        response = self.client.get(reverse('api-get_conversations'), {'token': self.profile.token})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response['Content-Type'], 'application/json')
+        self.assertEqual(json.loads(response.content), {'data': {'messages': []},
+                                                        'status': 'success'})
+
+        recipient = create_profile(create_user(1), 1)
+        message = create_message(self.profile, recipient)
+
+        response = self.client.get(reverse('api-get_conversations'), {'token': self.profile.token})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response['Content-Type'], 'application/json')
+        self.assertEqual(json.loads(response.content), {'data': {'messages': [message.serialize()]},
+                                                        'status': 'success'})
+
+        message = create_message(recipient, self.profile)
+
+        response = self.client.get(reverse('api-get_conversations'), {'token': self.profile.token})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response['Content-Type'], 'application/json')
+        self.assertEqual(json.loads(response.content), {'data': {'messages': [message.serialize()]},
+                                                        'status': 'success'})
+
+class GetConversationAPITestCase(AuthenticatedAPITestCase):
+    def test_get_conversation_api_invalid(self):
+        response = self.client.get(reverse('api-get_conversation', kwargs={'username': self.profile.user.username}))
+        self.assertEqual(response.status_code, 404)
+
+    def test_get_conversation_api_valid(self):
+        recipient = create_profile(create_user(1), 1)
+
+        response = self.client.get(reverse('api-get_conversation', kwargs={'username': recipient.user.username}), {'token': self.profile.token})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response['Content-Type'], 'application/json')
+        self.assertEqual(json.loads(response.content), {'data': {'messages': []},
+                                                        'status': 'success'})
+
+        messages = [create_message(self.profile, recipient).serialize()]
+
+        response = self.client.get(reverse('api-get_conversation', kwargs={'username': recipient.user.username}), {'token': self.profile.token})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response['Content-Type'], 'application/json')
+        self.assertEqual(json.loads(response.content), {'data': {'messages': messages},
+                                                        'status': 'success'})
+
+        messages.append(create_message(recipient, self.profile).serialize())
+
+        response = self.client.get(reverse('api-get_conversation', kwargs={'username': recipient.user.username}), {'token': self.profile.token})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response['Content-Type'], 'application/json')
+        self.assertEqual(json.loads(response.content), {'data': {'messages': messages},
+                                                        'status': 'success'})
+
+class SendMessageAPITestCase(AuthenticatedAPITestCase):
+    def test_send_message_api_invalid(self):
+        recipient = create_profile(create_user(1), 1)
+
+        response = self.client.post(reverse('api-send_message', kwargs={'username': recipient.user.username}))
+        self.assertEqual(response.status_code, 404)
+
+        response = self.client.post(reverse('api-send_message', kwargs={'username': self.profile.user.username}), {'token': self.profile.token})
+        self.assertEqual(response.status_code, 404)
+
+        response = self.client.post(reverse('api-send_message', kwargs={'username': recipient.user.username}), {'token': self.profile.token})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response['Content-Type'], 'application/json')
+        self.assertEqual(json.loads(response.content), {'message': 'body: This field is required.',
+                                                        'status': 'error'})
+
+    def test_send_message_api_valid(self):
+        recipient = create_profile(create_user(1), 1)
+
+        response = self.client.post(reverse('api-send_message', kwargs={'username': recipient.user.username}), {'token': self.profile.token, 'body': BODY})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response['Content-Type'], 'application/json')
+        message = Message.objects.get()
+        self.assertEqual(json.loads(response.content), {'data': {'message': message.serialize()},
+                                                        'status': 'success'})
+        self.assertEqual(message.sender.user.username, TEST_DATA[0]['username'])
+        self.assertEqual(message.recipient.user.username, TEST_DATA[1]['username'])
+        self.assertEqual(message.body, BODY)
