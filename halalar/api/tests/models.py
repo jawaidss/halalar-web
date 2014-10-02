@@ -47,7 +47,7 @@ class ProfileTestCase(TestCase):
                     'country': TEST_DATA[0]['country'],
                     'email': TEST_DATA[0]['email'],
                     'family': TEST_DATA[0]['family'],
-                    'gender': TEST_DATA[0]['gender'].capitalize(),
+                    'gender': TEST_DATA[0]['gender'],
                     'religion': TEST_DATA[0]['religion'],
                     'self': TEST_DATA[0]['self'],
                     'username': TEST_DATA[0]['username']}

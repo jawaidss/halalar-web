@@ -47,7 +47,7 @@ class Profile(models.Model):
     def serialize(self, include_email=True):
         data = {'username': self.user.username,
                 'age': self.age,
-                'gender': self.get_gender_display(),
+                'gender': self.gender,
                 'city': self.city,
                 'country': self.country.code,
                 'religion': self.religion,
