@@ -101,7 +101,7 @@ class GetConversationsAPI(AuthenticatedAPI):
             pk = Message.objects.filter(q).latest().pk
             pks.append(pk)
 
-        messages = Message.objects.filter(pk__in=pks)
+        messages = Message.objects.filter(pk__in=pks).reverse()
         messages = [message.serialize() for message in messages]
 
         return self.success({'messages': messages})
