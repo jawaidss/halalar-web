@@ -128,7 +128,7 @@ class EditProfileAPITestCase(AuthenticatedAPITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response['Content-Type'], 'application/json')
         profile = Profile.objects.get()
-        self.assertEqual(json.loads(response.content), {'data': {'profile': profile.serialize()},
+        self.assertEqual(json.loads(response.content), {'data': {},
                                                         'status': 'success'})
         self.assertEqual(profile.age, TEST_DATA[1]['age'])
         self.assertEqual(profile.career, TEST_DATA[1]['career'])
