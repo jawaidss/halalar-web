@@ -85,7 +85,7 @@ class EditProfileAPI(AuthenticatedAPI):
         if form.is_valid():
             profile = form.save()
 
-            return self.success({'profile': profile.serialize()})
+            return self.success({}) # TODO
         else:
             return self.error(form.error_message())
 
