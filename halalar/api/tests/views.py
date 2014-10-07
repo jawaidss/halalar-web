@@ -11,6 +11,7 @@ class LogInAPITestCase(TestCase):
         response = self.client.post(reverse('api-log_in'))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response['Content-Type'], 'application/json')
+        self.assertEqual(response['Access-Control-Allow-Origin'], '*')
         self.assertEqual(json.loads(response.content), {'message': 'password: This field is required.\nusername: This field is required.',
                                                         'status': 'error'})
 
@@ -21,6 +22,7 @@ class LogInAPITestCase(TestCase):
                                                             'password': TEST_DATA[0]['password']})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response['Content-Type'], 'application/json')
+        self.assertEqual(response['Access-Control-Allow-Origin'], '*')
         self.assertEqual(json.loads(response.content), {'message': '',
                                                         'status': 'error'})
 
@@ -30,6 +32,7 @@ class LogInAPITestCase(TestCase):
                                                             'password': TEST_DATA[0]['password']})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response['Content-Type'], 'application/json')
+        self.assertEqual(response['Access-Control-Allow-Origin'], '*')
         self.assertEqual(json.loads(response.content), {'data': {'token': profile.token},
                                                         'status': 'success'})
 
@@ -38,6 +41,7 @@ class SignUpAPITestCase(TestCase):
         response = self.client.post(reverse('api-sign_up'))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response['Content-Type'], 'application/json')
+        self.assertEqual(response['Access-Control-Allow-Origin'], '*')
         self.assertEqual(json.loads(response.content), {'message': 'email: This field is required.\npassword: This field is required.\nusername: This field is required.\nage: This field is required.\ncareer: This field is required.\ncity: This field is required.\ncommunity: This field is required.\ncountry: This field is required.\nfamily: This field is required.\ngender: This field is required.\nreligion: This field is required.\nself: This field is required.',
                                                         'status': 'error'})
 
@@ -45,6 +49,7 @@ class SignUpAPITestCase(TestCase):
         response = self.client.post(reverse('api-sign_up'), TEST_DATA[0])
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response['Content-Type'], 'application/json')
+        self.assertEqual(response['Access-Control-Allow-Origin'], '*')
         self.assertEqual(json.loads(response.content), {'data': {'token': Profile.objects.get().token},
                                                         'status': 'success'})
 
@@ -62,6 +67,7 @@ class GetProfileAPITestCase(AuthenticatedAPITestCase):
         response = self.client.get(reverse('api-get_profile'), {'token': self.profile.token})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response['Content-Type'], 'application/json')
+        self.assertEqual(response['Access-Control-Allow-Origin'], '*')
         self.assertEqual(json.loads(response.content), {'data': {'profile': self.profile.serialize()},
                                                         'status': 'success'})
 
@@ -72,6 +78,7 @@ class GetProfileAPITestCase(AuthenticatedAPITestCase):
         response = self.client.get(reverse('api-get_random_profile'), {'token': self.profile.token})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response['Content-Type'], 'application/json')
+        self.assertEqual(response['Access-Control-Allow-Origin'], '*')
         self.assertEqual(json.loads(response.content), {'message': '',
                                                         'status': 'error'})
 
@@ -82,6 +89,7 @@ class GetProfileAPITestCase(AuthenticatedAPITestCase):
         response = self.client.get(reverse('api-get_random_profile'), {'token': self.profile.token})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response['Content-Type'], 'application/json')
+        self.assertEqual(response['Access-Control-Allow-Origin'], '*')
         self.assertEqual(json.loads(response.content), {'data': {'profile': profile.serialize(False)},
                                                         'status': 'success'})
 
@@ -92,6 +100,7 @@ class GetProfileAPITestCase(AuthenticatedAPITestCase):
         response = self.client.get(reverse('api-get_specific_profile', kwargs={'username': self.profile.user.username}), {'token': self.profile.token})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response['Content-Type'], 'application/json')
+        self.assertEqual(response['Access-Control-Allow-Origin'], '*')
         self.assertEqual(json.loads(response.content), {'message': '',
                                                         'status': 'error'})
 
@@ -107,6 +116,7 @@ class GetProfileAPITestCase(AuthenticatedAPITestCase):
         response = self.client.get(reverse('api-get_specific_profile', kwargs={'username': user.username}), {'token': self.profile.token})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response['Content-Type'], 'application/json')
+        self.assertEqual(response['Access-Control-Allow-Origin'], '*')
         self.assertEqual(json.loads(response.content), {'data': {'profile': profile.serialize(False)},
                                                         'status': 'success'})
 
@@ -118,6 +128,7 @@ class EditProfileAPITestCase(AuthenticatedAPITestCase):
         response = self.client.post(reverse('api-edit_profile'), {'token': self.profile.token})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response['Content-Type'], 'application/json')
+        self.assertEqual(response['Access-Control-Allow-Origin'], '*')
         self.assertEqual(json.loads(response.content), {'message': 'age: This field is required.\ncareer: This field is required.\ncity: This field is required.\ncommunity: This field is required.\ncountry: This field is required.\nfamily: This field is required.\nreligion: This field is required.\nself: This field is required.',
                                                         'status': 'error'})
 
@@ -127,6 +138,7 @@ class EditProfileAPITestCase(AuthenticatedAPITestCase):
         response = self.client.post(reverse('api-edit_profile'), data)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response['Content-Type'], 'application/json')
+        self.assertEqual(response['Access-Control-Allow-Origin'], '*')
         profile = Profile.objects.get()
         self.assertEqual(json.loads(response.content), {'data': {},
                                                         'status': 'success'})
@@ -149,6 +161,7 @@ class GetConversationsAPITestCase(AuthenticatedAPITestCase):
         response = self.client.get(reverse('api-get_conversations'), {'token': self.profile.token})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response['Content-Type'], 'application/json')
+        self.assertEqual(response['Access-Control-Allow-Origin'], '*')
         self.assertEqual(json.loads(response.content), {'data': {'messages': []},
                                                         'status': 'success'})
 
@@ -158,6 +171,7 @@ class GetConversationsAPITestCase(AuthenticatedAPITestCase):
         response = self.client.get(reverse('api-get_conversations'), {'token': self.profile.token})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response['Content-Type'], 'application/json')
+        self.assertEqual(response['Access-Control-Allow-Origin'], '*')
         self.assertEqual(json.loads(response.content), {'data': {'messages': [message.serialize()]},
                                                         'status': 'success'})
 
@@ -166,6 +180,7 @@ class GetConversationsAPITestCase(AuthenticatedAPITestCase):
         response = self.client.get(reverse('api-get_conversations'), {'token': self.profile.token})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response['Content-Type'], 'application/json')
+        self.assertEqual(response['Access-Control-Allow-Origin'], '*')
         self.assertEqual(json.loads(response.content), {'data': {'messages': [message.serialize()]},
                                                         'status': 'success'})
 
@@ -180,6 +195,7 @@ class GetConversationAPITestCase(AuthenticatedAPITestCase):
         response = self.client.get(reverse('api-get_conversation', kwargs={'username': recipient.user.username}), {'token': self.profile.token})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response['Content-Type'], 'application/json')
+        self.assertEqual(response['Access-Control-Allow-Origin'], '*')
         self.assertEqual(json.loads(response.content), {'data': {'messages': []},
                                                         'status': 'success'})
 
@@ -188,6 +204,7 @@ class GetConversationAPITestCase(AuthenticatedAPITestCase):
         response = self.client.get(reverse('api-get_conversation', kwargs={'username': recipient.user.username}), {'token': self.profile.token})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response['Content-Type'], 'application/json')
+        self.assertEqual(response['Access-Control-Allow-Origin'], '*')
         self.assertEqual(json.loads(response.content), {'data': {'messages': messages},
                                                         'status': 'success'})
 
@@ -196,6 +213,7 @@ class GetConversationAPITestCase(AuthenticatedAPITestCase):
         response = self.client.get(reverse('api-get_conversation', kwargs={'username': recipient.user.username}), {'token': self.profile.token})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response['Content-Type'], 'application/json')
+        self.assertEqual(response['Access-Control-Allow-Origin'], '*')
         self.assertEqual(json.loads(response.content), {'data': {'messages': messages},
                                                         'status': 'success'})
 
@@ -212,6 +230,7 @@ class SendMessageAPITestCase(AuthenticatedAPITestCase):
         response = self.client.post(reverse('api-send_message', kwargs={'username': recipient.user.username}), {'token': self.profile.token})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response['Content-Type'], 'application/json')
+        self.assertEqual(response['Access-Control-Allow-Origin'], '*')
         self.assertEqual(json.loads(response.content), {'message': 'body: This field is required.',
                                                         'status': 'error'})
 
@@ -221,6 +240,7 @@ class SendMessageAPITestCase(AuthenticatedAPITestCase):
         response = self.client.post(reverse('api-send_message', kwargs={'username': recipient.user.username}), {'token': self.profile.token, 'body': BODY})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response['Content-Type'], 'application/json')
+        self.assertEqual(response['Access-Control-Allow-Origin'], '*')
         message = Message.objects.get()
         self.assertEqual(json.loads(response.content), {'data': {'message': message.serialize()},
                                                         'status': 'success'})

@@ -10,6 +10,11 @@ from .forms import UserForm, ProfileForm, AuthenticationForm, MessageForm
 from .models import Profile, Message
 
 class API(CsrfExemptMixin, JSONResponseMixin, View):
+    def render_json_response(self, *args, **kwargs):
+        response = super(API, self).render_json_response(*args, **kwargs)
+        response['Access-Control-Allow-Origin'] = '*'
+        return response
+
     def success(self, data):
         return self.render_json_response({'status': 'success', 'data': data})
 
@@ -85,7 +90,7 @@ class EditProfileAPI(AuthenticatedAPI):
         if form.is_valid():
             profile = form.save()
 
-            return self.success({}) # TODO
+            return self.success({})
         else:
             return self.error(form.error_message())
 
@@ -122,8 +127,6 @@ class SendMessageAPI(AuthenticatedAPI):
         username = self.kwargs['username']
         recipient = get_object_or_404(profiles, user__username=username)
         form = MessageForm(data=request.POST)
-
-        # TODO: must be the first message or a reply
 
         if form.is_valid():
             message = form.save(commit=False)

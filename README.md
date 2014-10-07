@@ -28,7 +28,7 @@ python manage.py migrate
 ```bash
 cd /path/to/halalar-web/halalar
 workon halalar
-python manage.py runserver
+python manage.py runserver 0.0.0.0:8000
 ```
 
 ## Testing
