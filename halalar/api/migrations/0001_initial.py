@@ -23,6 +23,7 @@ class Migration(migrations.Migration):
             ],
             options={
                 'ordering': ['timestamp'],
+                'get_latest_by': 'timestamp',
             },
             bases=(models.Model,),
         ),
