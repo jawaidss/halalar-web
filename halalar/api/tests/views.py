@@ -23,7 +23,7 @@ class LogInAPITestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response['Content-Type'], 'application/json')
         self.assertEqual(response['Access-Control-Allow-Origin'], '*')
-        self.assertEqual(json.loads(response.content), {'message': '',
+        self.assertEqual(json.loads(response.content), {'message': 'This profile is inactive.',
                                                         'status': 'error'})
 
         profile = create_profile(user)
@@ -79,7 +79,7 @@ class GetProfileAPITestCase(AuthenticatedAPITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response['Content-Type'], 'application/json')
         self.assertEqual(response['Access-Control-Allow-Origin'], '*')
-        self.assertEqual(json.loads(response.content), {'message': '',
+        self.assertEqual(json.loads(response.content), {'message': 'No profiles yet',
                                                         'status': 'error'})
 
     def test_get_random_profile_api_valid(self):
@@ -101,7 +101,7 @@ class GetProfileAPITestCase(AuthenticatedAPITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response['Content-Type'], 'application/json')
         self.assertEqual(response['Access-Control-Allow-Origin'], '*')
-        self.assertEqual(json.loads(response.content), {'message': '',
+        self.assertEqual(json.loads(response.content), {'message': 'No profiles yet',
                                                         'status': 'error'})
 
         create_profile(create_user(1), 1)

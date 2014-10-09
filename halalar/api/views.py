@@ -29,7 +29,7 @@ class LogInAPI(API):
             try:
                 profile = form.get_user().profile
             except Profile.DoesNotExist:
-                return self.error('') # TODO
+                return self.error('This profile is inactive.')
             else:
                 return self.success({'token': profile.token})
         else:
@@ -45,10 +45,6 @@ class SignUpAPI(API):
             profile = profile_form.save(commit=False)
             profile.user = user
             profile.save()
-            # TODO
-            # 1) Send emails to admins.
-            # 2) Send delayed email to user.
-            # 3) Add user to MailChimp list.
 
             return self.success({'token': profile.token})
         else:
@@ -79,7 +75,7 @@ class GetProfileAPI(AuthenticatedAPI):
                 else:
                     profile = get_object_or_404(profiles, user__username=username)
             else:
-                return self.error('') # TODO
+                return self.error('No profiles yet')
 
         return self.success({'profile': profile.serialize(not self.random)})
 
