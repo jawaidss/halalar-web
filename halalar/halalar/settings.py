@@ -152,3 +152,5 @@ else:
 ALLOWED_HOSTS = [
     '.%s' % SITE_DOMAIN,
 ]
+
+AWS_BACKUP_BUCKET_NAME = 'halalar-backup'
