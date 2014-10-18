@@ -20,7 +20,7 @@ sudo su postgres -c "createuser -P halalar"
 sudo su postgres -c 'psql -c "ALTER USER halalar CREATEDB;"'
 sudo su postgres -c 'psql -c "GRANT ALL PRIVILEGES ON DATABASE halalar TO halalar;"'
 cd halalar
-python manage.py migrate
+./manage.py migrate
 ```
 
 ## Usage
@@ -28,7 +28,7 @@ python manage.py migrate
 ```bash
 cd /path/to/halalar-web/halalar
 workon halalar
-python manage.py runserver 0.0.0.0:8000
+./manage.py runserver 0.0.0.0:8000
 ```
 
 ## Testing
@@ -47,4 +47,10 @@ fab style
 
 ```bash
 fab deploy
+```
+
+## Restoring
+
+```bash
+fab restore
 ```
