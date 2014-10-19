@@ -6,7 +6,8 @@ import random
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.humanize.templatetags.humanize import naturaltime
-from django.core.mail import EmailMessage
+from django.core.mail import EmailMessage, send_mail
+from django.core.urlresolvers import reverse
 from django.core.validators import MinValueValidator
 from django.db import models
 
@@ -81,6 +82,45 @@ www.%s''' % (settings.SITE_NAME, settings.SITE_DOMAIN)
         email = EmailMessage(subject, message, from_email, to)
         email.send_at = datetime.now() + timedelta(days=1)
         email.send()
+
+    def send_signup_notification_email(self):
+        subject = self.user.username
+        message = '''Username: %(username)s
+Email: %(email)s
+
+Age: %(age)s
+Gender: %(gender)s
+City: %(city)s
+Country: %(country)s
+
+Religion: %(religion)s
+
+Family: %(family)s
+
+Self: %(self)s
+
+Community: %(community)s
+
+Career: %(career)s
+
+https://%(domain)s%(url)s''' % {'username': self.user.username,
+                                'email': self.user.email,
+                                'age': self.age,
+                                'gender': self.get_gender_display(),
+                                'city': self.city,
+                                'country': self.country.name,
+                                'religion': self.religion,
+                                'family': self.family,
+                                'self': self.selfx,
+                                'community': self.community,
+                                'career': self.career,
+                                'domain': settings.SITE_DOMAIN,
+                                'url': reverse('admin:api_profile_change', args=[self.pk])}
+
+        from_email = 'sikander@%s' % settings.SITE_DOMAIN
+        recipient_list = [settings.ASANA_EMAIL]
+
+        send_mail(subject, message, from_email, recipient_list)
 
 class Message(models.Model):
     sender = models.ForeignKey(Profile, related_name='sent')

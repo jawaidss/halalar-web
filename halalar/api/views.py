@@ -47,6 +47,7 @@ class SignUpAPI(API):
             profile.save()
 
             profile.send_delayed_welcome_email()
+            profile.send_signup_notification_email()
 
             return self.success({'token': profile.token})
         else:

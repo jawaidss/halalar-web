@@ -154,3 +154,5 @@ ALLOWED_HOSTS = [
 ]
 
 AWS_BACKUP_BUCKET_NAME = 'halalar-backup'
+
+ASANA_EMAIL = 'x+18207867958361@mail.asana.com'

@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.core import mail
 from django.test import TestCase
@@ -75,6 +76,20 @@ class ProfileTestCase(TestCase):
         self.assertTrue(len(email.to), 1)
         self.assertEqual(email.to[0], user.email)
         self.assertTrue(86399 <= (email.send_at - datetime.now()).seconds <= 86400)
+
+    def test_send_signup_notification_email(self):
+        user = create_user()
+        profile = create_profile(user)
+
+        profile.send_signup_notification_email()
+        self.assertEqual(len(mail.outbox), 1)
+
+        email = mail.outbox[0]
+        self.assertTrue(email.subject)
+        self.assertTrue(email.message)
+        self.assertTrue(email.from_email)
+        self.assertTrue(len(email.to), 1)
+        self.assertEqual(email.to[0], settings.ASANA_EMAIL)
 
 class MessageTestCase(TestCase):
     def test_serialize(self):
