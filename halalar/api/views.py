@@ -46,6 +46,8 @@ class SignUpAPI(API):
             profile.user = user
             profile.save()
 
+            profile.send_delayed_welcome_email()
+
             return self.success({'token': profile.token})
         else:
             error_messages = [user_form.error_message(), profile_form.error_message()]

@@ -1,4 +1,7 @@
+from datetime import datetime
+
 from django.contrib.auth.models import User
+from django.core import mail
 from django.test import TestCase
 
 from . import TEST_DATA, BODY, create_user, create_profile, create_message
@@ -57,6 +60,21 @@ class ProfileTestCase(TestCase):
         del expected['email']
 
         self.assertEqual(profile.serialize(False), expected)
+
+    def test_send_delayed_welcome_email(self):
+        user = create_user()
+        profile = create_profile(user)
+
+        profile.send_delayed_welcome_email()
+        self.assertEqual(len(mail.outbox), 1)
+
+        email = mail.outbox[0]
+        self.assertTrue(email.subject)
+        self.assertTrue(email.message)
+        self.assertTrue(email.from_email)
+        self.assertTrue(len(email.to), 1)
+        self.assertEqual(email.to[0], user.email)
+        self.assertTrue(86399 <= (email.send_at - datetime.now()).seconds <= 86400)
 
 class MessageTestCase(TestCase):
     def test_serialize(self):

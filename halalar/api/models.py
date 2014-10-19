@@ -1,9 +1,12 @@
+from datetime import datetime, timedelta
 from django_countries.fields import CountryField
 import hashlib
 import random
 
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.humanize.templatetags.humanize import naturaltime
+from django.core.mail import EmailMessage
 from django.core.validators import MinValueValidator
 from django.db import models
 
@@ -60,6 +63,24 @@ class Profile(models.Model):
             data['email'] = self.user.email
 
         return data
+
+    def send_delayed_welcome_email(self):
+        subject = settings.SITE_NAME
+        message = '''Salaam,
+
+I'm Sikander, the creator of %s. Thanks for signing up! I wanted to reach out to see if you needed any help getting started.
+
+Best,
+
+Sikander Chowhan
+www.%s''' % (settings.SITE_NAME, settings.SITE_DOMAIN)
+
+        from_email = 'Sikander Chowhan <sikander@%s>' % settings.SITE_DOMAIN
+        to = [self.user.email]
+
+        email = EmailMessage(subject, message, from_email, to)
+        email.send_at = datetime.now() + timedelta(days=1)
+        email.send()
 
 class Message(models.Model):
     sender = models.ForeignKey(Profile, related_name='sent')
