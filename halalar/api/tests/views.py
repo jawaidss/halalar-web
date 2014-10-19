@@ -1,5 +1,8 @@
 import json
+import mailchimp
 
+from django.conf import settings
+from django.core import mail
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 
@@ -37,6 +40,14 @@ class LogInAPITestCase(TestCase):
                                                         'status': 'success'})
 
 class SignUpAPITestCase(TestCase):
+    m = mailchimp.Mailchimp()
+
+    def tearDown(self):
+        self.m.lists.batch_unsubscribe(settings.MAILCHIMP_LIST_ID,
+                                       [{'email': TEST_DATA[0]['email']}],
+                                       delete_member=True,
+                                       send_goodbye=False)
+
     def test_sign_up_api_invalid(self):
         response = self.client.post(reverse('api-sign_up'))
         self.assertEqual(response.status_code, 200)
@@ -52,6 +63,9 @@ class SignUpAPITestCase(TestCase):
         self.assertEqual(response['Access-Control-Allow-Origin'], '*')
         self.assertEqual(json.loads(response.content), {'data': {'token': Profile.objects.get().token},
                                                         'status': 'success'})
+
+        self.assertEqual(len(mail.outbox), 2)
+        self.assertEqual(self.m.lists.members(settings.MAILCHIMP_LIST_ID)['total'], 1)
 
 class AuthenticatedAPITestCase(TestCase):
     def setUp(self):
