@@ -7,6 +7,7 @@ import random
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.humanize.templatetags.humanize import naturaltime
+from django.contrib.sites.models import Site
 from django.core.mail import EmailMessage, send_mail
 from django.core.urlresolvers import reverse
 from django.core.validators import MinValueValidator
@@ -67,7 +68,9 @@ class Profile(models.Model):
         return data
 
     def send_delayed_welcome_email(self):
-        subject = settings.SITE_NAME
+        site = Site.objects.get_current()
+
+        subject = site.name
         message = '''Salaam,
 
 I'm Sikander, the creator of %s. Thanks for signing up! I wanted to reach out to see if you needed any help getting started.
@@ -75,9 +78,9 @@ I'm Sikander, the creator of %s. Thanks for signing up! I wanted to reach out to
 Best,
 
 Sikander Chowhan
-www.%s''' % (settings.SITE_NAME, settings.SITE_DOMAIN)
+www.%s''' % (site.name, site.domain)
 
-        from_email = 'Sikander Chowhan <sikander@%s>' % settings.SITE_DOMAIN
+        from_email = 'Sikander Chowhan <sikander@%s>' % site.domain
         to = [self.user.email]
 
         email = EmailMessage(subject, message, from_email, to)
@@ -85,6 +88,8 @@ www.%s''' % (settings.SITE_NAME, settings.SITE_DOMAIN)
         email.send()
 
     def send_signup_notification_email(self):
+        site = Site.objects.get_current()
+
         subject = self.user.username
         message = '''Username: %(username)s
 Email: %(email)s
@@ -115,10 +120,10 @@ https://%(domain)s%(url)s''' % {'username': self.user.username,
                                 'self': self.selfx,
                                 'community': self.community,
                                 'career': self.career,
-                                'domain': settings.SITE_DOMAIN,
+                                'domain': site.domain,
                                 'url': reverse('admin:api_profile_change', args=[self.pk])}
 
-        from_email = 'sikander@%s' % settings.SITE_DOMAIN
+        from_email = 'sikander@%s' % site.domain
         recipient_list = [settings.ASANA_EMAIL]
 
         send_mail(subject, message, from_email, recipient_list)
