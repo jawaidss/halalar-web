@@ -48,6 +48,7 @@ class SignUpAPI(API):
 
             profile.send_delayed_welcome_email()
             profile.send_signup_notification_email()
+            profile.subscribe_to_mailchimp_list()
 
             return self.success({'token': profile.token})
         else:

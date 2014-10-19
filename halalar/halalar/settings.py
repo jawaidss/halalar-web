@@ -136,6 +136,8 @@ ADMINS = (
 
 if DEBUG:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+    MAILCHIMP_LIST_ID = '07b7235072'
 else:
     CSRF_COOKIE_SECURE = True
     SESSION_COOKIE_SECURE = True
@@ -148,6 +150,8 @@ else:
     AWS_STORAGE_BUCKET_NAME = 'halalar'
     STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
     AWS_QUERYSTRING_AUTH = False
+
+    MAILCHIMP_LIST_ID = '0bfa358826'
 
 ALLOWED_HOSTS = [
     '.%s' % SITE_DOMAIN,

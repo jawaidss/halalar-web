@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 from django_countries.fields import CountryField
 import hashlib
+import mailchimp
 import random
 
 from django.conf import settings
@@ -121,6 +122,13 @@ https://%(domain)s%(url)s''' % {'username': self.user.username,
         recipient_list = [settings.ASANA_EMAIL]
 
         send_mail(subject, message, from_email, recipient_list)
+
+    def subscribe_to_mailchimp_list(self):
+        m = mailchimp.Mailchimp()
+        m.lists.subscribe(settings.MAILCHIMP_LIST_ID,
+                          {'email': self.user.email},
+                          double_optin=False,
+                          update_existing=True)
 
 class Message(models.Model):
     sender = models.ForeignKey(Profile, related_name='sent')

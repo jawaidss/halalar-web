@@ -1,4 +1,5 @@
 from datetime import datetime
+import mailchimp
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -9,6 +10,14 @@ from . import TEST_DATA, BODY, create_user, create_profile, create_message
 from ..models import Profile
 
 class ProfileTestCase(TestCase):
+    m = mailchimp.Mailchimp()
+
+    def tearDown(self):
+        self.m.lists.batch_unsubscribe(settings.MAILCHIMP_LIST_ID,
+                                       [{'email': TEST_DATA[0]['email']}],
+                                       delete_member=True,
+                                       send_goodbye=False)
+
     def test_save(self):
         # tests that a token is generated on save
         # if it is not given
@@ -90,6 +99,14 @@ class ProfileTestCase(TestCase):
         self.assertTrue(email.from_email)
         self.assertTrue(len(email.to), 1)
         self.assertEqual(email.to[0], settings.ASANA_EMAIL)
+
+    def test_subscribe_to_mailchimp_list(self):
+        user = create_user()
+        profile = create_profile(user)
+
+        profile.subscribe_to_mailchimp_list()
+        self.assertEqual(self.m.lists.member_info(settings.MAILCHIMP_LIST_ID,
+                                                  [{'email': TEST_DATA[0]['email']}])['success_count'], 1)
 
 class MessageTestCase(TestCase):
     def test_serialize(self):
