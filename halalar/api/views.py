@@ -60,7 +60,7 @@ class SignUpAPI(API):
 class AuthenticatedAPI(API):
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):
-        profile = get_object_or_404(Profile, token=getattr(request, request.method, {}).get('token'))
+        profile = get_object_or_404(Profile, user__is_active=True, token=getattr(request, request.method, {}).get('token'))
 
         return super(AuthenticatedAPI, self).dispatch(request, profile, *args, **kwargs)
 
@@ -69,7 +69,7 @@ class GetProfileAPI(AuthenticatedAPI):
 
     def get(self, request, profile, *args, **kwargs):
         if self.random:
-            profiles = Profile.objects.exclude(gender=profile.gender)
+            profiles = Profile.objects.filter(user__is_active=True).exclude(gender=profile.gender)
 
             if profiles.exists():
                 username = self.kwargs.get('username')
@@ -96,8 +96,8 @@ class EditProfileAPI(AuthenticatedAPI):
 
 class GetConversationsAPI(AuthenticatedAPI):
     def get(self, request, profile, *args, **kwargs):
-        sent = set(profile.sent.values_list('recipient__user__username', flat=True))
-        received = set(profile.received.values_list('sender__user__username', flat=True))
+        sent = set(profile.sent.filter(recipient__user__is_active=True).values_list('recipient__user__username', flat=True))
+        received = set(profile.received.filter(sender__user__is_active=True).values_list('sender__user__username', flat=True))
         pks = []
 
         for username in sent | received:
@@ -114,8 +114,8 @@ class GetConversationsAPI(AuthenticatedAPI):
 class GetConversationAPI(AuthenticatedAPI):
     def get(self, request, profile, *args, **kwargs):
         username = self.kwargs['username']
-        q = Q(recipient__user__username=username, sender=profile) |\
-            Q(sender__user__username=username, recipient=profile)
+        q = Q(recipient__user__is_active=True, recipient__user__username=username, sender=profile) |\
+            Q(sender__user__is_active=True, sender__user__username=username, recipient=profile)
         messages = Message.objects.filter(q)
         messages = [message.serialize() for message in messages]
 
@@ -123,7 +123,7 @@ class GetConversationAPI(AuthenticatedAPI):
 
 class SendMessageAPI(AuthenticatedAPI):
     def post(self, request, profile, *args, **kwargs):
-        profiles = Profile.objects.exclude(gender=profile.gender)
+        profiles = Profile.objects.filter(user__is_active=True).exclude(gender=profile.gender)
         username = self.kwargs['username']
         recipient = get_object_or_404(profiles, user__username=username)
         form = MessageForm(data=request.POST)
