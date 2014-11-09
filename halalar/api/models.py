@@ -77,6 +77,7 @@ I'm Sikander, the creator of %s. Thanks for signing up! I wanted to reach out to
 
 Best,
 
+--
 Sikander Chowhan
 www.%s''' % (site.name, site.domain)
 
@@ -109,7 +110,8 @@ Community: %(community)s
 
 Career: %(career)s
 
-https://%(domain)s%(url)s''' % {'username': self.user.username,
+https://%(domain)s%(user_url)s
+https://%(domain)s%(profile_url)s''' % {'username': self.user.username,
                                 'email': self.user.email,
                                 'age': self.age,
                                 'gender': self.get_gender_display(),
@@ -121,7 +123,8 @@ https://%(domain)s%(url)s''' % {'username': self.user.username,
                                 'community': self.community,
                                 'career': self.career,
                                 'domain': site.domain,
-                                'url': reverse('admin:api_profile_change', args=[self.pk])}
+                                'user_url': reverse('admin:auth_user_change', args=[self.user.pk]),
+                                'profile_url': reverse('admin:api_profile_change', args=[self.pk])}
 
         from_email = 'sikander@%s' % site.domain
         recipient_list = [settings.ASANA_EMAIL]
