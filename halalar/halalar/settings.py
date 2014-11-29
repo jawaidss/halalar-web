@@ -134,8 +134,13 @@ ADMINS = (
     (SITE_NAME, SERVER_EMAIL),
 )
 
+AWS_QUERYSTRING_AUTH = False
+
 if DEBUG:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+    AWS_STORAGE_BUCKET_NAME = 'halalar-test'
+    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 
     MAILCHIMP_LIST_ID = '07b7235072'
 else:
@@ -145,11 +150,8 @@ else:
     MANDRILL_API_KEY = os.environ['MANDRILL_API_KEY']
     EMAIL_BACKEND = 'djrill.mail.backends.djrill.DjrillBackend'
 
-    AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
-    AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
-    AWS_STORAGE_BUCKET_NAME = 'halalar'
-    STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
-    AWS_QUERYSTRING_AUTH = False
+    DEFAULT_FILE_STORAGE = 'halalar.storages.MediaS3BotoStorage'
+    STATICFILES_STORAGE = 'halalar.storages.StaticS3BotoStorage'
 
     MAILCHIMP_LIST_ID = '0bfa358826'
 

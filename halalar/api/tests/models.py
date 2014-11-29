@@ -61,6 +61,7 @@ class ProfileTestCase(TestCase):
                     'email': TEST_DATA[0]['email'],
                     'family': TEST_DATA[0]['family'],
                     'gender': TEST_DATA[0]['gender'],
+                    'photo': None,
                     'religion': TEST_DATA[0]['religion'],
                     'self': TEST_DATA[0]['self'],
                     'username': TEST_DATA[0]['username']}

@@ -40,7 +40,7 @@ class UserForm(APIForm, forms.ModelForm):
 class ProfileForm(APIForm, forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ['age', 'gender', 'city', 'country',
+        fields = ['photo', 'age', 'gender', 'city', 'country',
                   'religion', 'family', 'selfx', 'community', 'career']
 
     def __init__(self, *args, **kwargs):

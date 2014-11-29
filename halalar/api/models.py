@@ -2,13 +2,14 @@ from datetime import datetime, timedelta
 from django_countries.fields import CountryField
 import hashlib
 import mailchimp
+import os
 import random
 
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.contrib.sites.models import Site
-from django.core.mail import EmailMessage, send_mail
+from django.core.mail import EmailMessage
 from django.core.urlresolvers import reverse
 from django.core.validators import MinValueValidator
 from django.db import models
@@ -19,6 +20,9 @@ def _random_token(username):
     salt = hashlib.sha1(str(random.random())).hexdigest()[:5]
     return hashlib.sha1(salt + username).hexdigest()
 
+def _profile_photo_upload_to(instance, filename):
+    return os.path.join('profiles', 'photos', '%s%sjpg' % (instance.user.username, os.extsep))
+
 class Profile(models.Model):
     MALE = 'male'
     FEMALE = 'female'
@@ -28,6 +32,7 @@ class Profile(models.Model):
     )
     user = models.OneToOneField(User)
     token = models.CharField(max_length=40, unique=True, editable=False)
+    photo = models.ImageField(upload_to=_profile_photo_upload_to, null=True, blank=True)
     age = models.SmallIntegerField(validators=[MinValueValidator(MINIMUM_AGE)])
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
     city = models.CharField(max_length=100)
@@ -52,6 +57,7 @@ class Profile(models.Model):
 
     def serialize(self, include_email=True):
         data = {'username': self.user.username,
+                'photo': self.photo and self.photo.url or None,
                 'age': self.age,
                 'gender': self.gender,
                 'city': self.city,
@@ -112,24 +118,31 @@ Career: %(career)s
 
 https://%(domain)s%(user_url)s
 https://%(domain)s%(profile_url)s''' % {'username': self.user.username,
-                                'email': self.user.email,
-                                'age': self.age,
-                                'gender': self.get_gender_display(),
-                                'city': self.city,
-                                'country': self.country.name,
-                                'religion': self.religion,
-                                'family': self.family,
-                                'self': self.selfx,
-                                'community': self.community,
-                                'career': self.career,
-                                'domain': site.domain,
-                                'user_url': reverse('admin:auth_user_change', args=[self.user.pk]),
-                                'profile_url': reverse('admin:api_profile_change', args=[self.pk])}
+                                        'email': self.user.email,
+                                        'age': self.age,
+                                        'gender': self.get_gender_display(),
+                                        'city': self.city,
+                                        'country': self.country.name,
+                                        'religion': self.religion,
+                                        'family': self.family,
+                                        'self': self.selfx,
+                                        'community': self.community,
+                                        'career': self.career,
+                                        'domain': site.domain,
+                                        'user_url': reverse('admin:auth_user_change', args=[self.user.pk]),
+                                        'profile_url': reverse('admin:api_profile_change', args=[self.pk])}
 
         from_email = 'sikander@%s' % site.domain
-        recipient_list = [settings.ASANA_EMAIL]
+        to = [settings.ASANA_EMAIL]
 
-        send_mail(subject, message, from_email, recipient_list)
+        email = EmailMessage(subject, message, from_email, to)
+
+        if self.photo:
+            self.photo.open()
+            email.attach(os.path.basename(self.photo.url), self.photo.read())
+            self.photo.close()
+
+        email.send()
 
     def subscribe_to_mailchimp_list(self):
         m = mailchimp.Mailchimp()
