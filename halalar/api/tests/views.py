@@ -1,12 +1,13 @@
 import json
 import mailchimp
+from push_notifications.models import APNSDevice, GCMDevice
 
 from django.conf import settings
 from django.core import mail
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 
-from . import TEST_DATA, BODY, create_user, create_profile, create_message
+from . import TEST_DATA, BODY, REGISTRATION_ID, create_user, create_profile, create_message
 from ..models import Profile, Message
 
 class LogInAPITestCase(TestCase):
@@ -261,3 +262,66 @@ class SendMessageAPITestCase(AuthenticatedAPITestCase):
         self.assertEqual(message.sender.user.username, TEST_DATA[0]['username'])
         self.assertEqual(message.recipient.user.username, TEST_DATA[1]['username'])
         self.assertEqual(message.body, BODY)
+
+class RegisterPushNotificationsAPITestCase(AuthenticatedAPITestCase):
+    def test_register_push_notifications_api_invalid(self):
+        response = self.client.post(reverse('api-register_push_notifications', kwargs={'platform': 'iOS'}))
+        self.assertEqual(response.status_code, 404)
+
+        response = self.client.post(reverse('api-register_push_notifications', kwargs={'platform': 'iOS'}), {'token': self.profile.token})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response['Content-Type'], 'application/json')
+        self.assertEqual(response['Access-Control-Allow-Origin'], '*')
+        self.assertEqual(json.loads(response.content), {'message': 'registration_id: This field is required.',
+                                                        'status': 'error'})
+
+        response = self.client.post(reverse('api-register_push_notifications', kwargs={'platform': 'Android'}))
+        self.assertEqual(response.status_code, 404)
+
+        response = self.client.post(reverse('api-register_push_notifications', kwargs={'platform': 'Android'}), {'token': self.profile.token})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response['Content-Type'], 'application/json')
+        self.assertEqual(response['Access-Control-Allow-Origin'], '*')
+        self.assertEqual(json.loads(response.content), {'message': 'registration_id: This field is required.',
+                                                        'status': 'error'})
+
+    def test_register_push_notifications_api_valid(self):
+        response = self.client.post(reverse('api-register_push_notifications', kwargs={'platform': 'iOS'}), {'token': self.profile.token, 'registration_id': REGISTRATION_ID})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response['Content-Type'], 'application/json')
+        self.assertEqual(response['Access-Control-Allow-Origin'], '*')
+        self.assertEqual(json.loads(response.content), {'data': {}, 'status': 'success'})
+
+        device = APNSDevice.objects.get()
+        self.assertEqual(device.registration_id, REGISTRATION_ID)
+        self.assertEqual(device.user.username, TEST_DATA[0]['username'])
+
+        response = self.client.post(reverse('api-register_push_notifications', kwargs={'platform': 'iOS'}), {'token': self.profile.token, 'registration_id': REGISTRATION_ID})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response['Content-Type'], 'application/json')
+        self.assertEqual(response['Access-Control-Allow-Origin'], '*')
+        self.assertEqual(json.loads(response.content), {'data': {}, 'status': 'success'})
+
+        device = APNSDevice.objects.get()
+        self.assertEqual(device.registration_id, REGISTRATION_ID)
+        self.assertEqual(device.user.username, TEST_DATA[0]['username'])
+
+        response = self.client.post(reverse('api-register_push_notifications', kwargs={'platform': 'Android'}), {'token': self.profile.token, 'registration_id': REGISTRATION_ID})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response['Content-Type'], 'application/json')
+        self.assertEqual(response['Access-Control-Allow-Origin'], '*')
+        self.assertEqual(json.loads(response.content), {'data': {}, 'status': 'success'})
+
+        device = GCMDevice.objects.get()
+        self.assertEqual(device.registration_id, REGISTRATION_ID)
+        self.assertEqual(device.user.username, TEST_DATA[0]['username'])
+
+        response = self.client.post(reverse('api-register_push_notifications', kwargs={'platform': 'Android'}), {'token': self.profile.token, 'registration_id': REGISTRATION_ID})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response['Content-Type'], 'application/json')
+        self.assertEqual(response['Access-Control-Allow-Origin'], '*')
+        self.assertEqual(json.loads(response.content), {'data': {}, 'status': 'success'})
+
+        device = GCMDevice.objects.get()
+        self.assertEqual(device.registration_id, REGISTRATION_ID)
+        self.assertEqual(device.user.username, TEST_DATA[0]['username'])

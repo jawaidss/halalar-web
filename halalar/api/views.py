@@ -1,4 +1,5 @@
 from braces.views import CsrfExemptMixin, JSONResponseMixin
+from push_notifications.models import APNSDevice, GCMDevice
 
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
@@ -6,7 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
 from django.utils.decorators import method_decorator
 
-from .forms import UserForm, ProfileForm, AuthenticationForm, MessageForm
+from .forms import UserForm, ProfileForm, AuthenticationForm, MessageForm, APNSDeviceForm, GCMDeviceForm
 from .models import Profile, Message
 
 class API(CsrfExemptMixin, JSONResponseMixin, View):
@@ -135,5 +136,28 @@ class SendMessageAPI(AuthenticatedAPI):
             message.save()
 
             return self.success({'message': message.serialize()})
+        else:
+            return self.error(form.error_message())
+
+class RegisterPushNotificationsAPI(AuthenticatedAPI):
+    def post(self, request, profile, *args, **kwargs):
+        platform = self.kwargs['platform']
+        Device = {'iOS': APNSDevice, 'Android': GCMDevice}[platform]
+        DeviceForm = {'iOS': APNSDeviceForm, 'Android': GCMDeviceForm}[platform]
+        registration_id = request.POST.get('registration_id')
+
+        try:
+            device = Device.objects.get(registration_id=registration_id)
+        except Device.DoesNotExist:
+            device = None
+
+        form = DeviceForm(request.POST, instance=device)
+
+        if form.is_valid():
+            device = form.save()
+            device.user = profile.user
+            device.save()
+
+            return self.success({})
         else:
             return self.error(form.error_message())

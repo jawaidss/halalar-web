@@ -29,6 +29,8 @@ TEST_DATA = [{'age': 23,
 
 BODY = 'Salaam'
 
+REGISTRATION_ID = 'registration_id'
+
 def create_user(i=0):
     return User.objects.create_user(TEST_DATA[i]['username'],
                                     email=TEST_DATA[i]['email'],
@@ -53,4 +55,5 @@ def create_message(sender, recipient):
 
 from forms import *
 from models import *
+from signals import *
 from views import *

@@ -169,3 +169,8 @@ class Message(models.Model):
                 'recipient': self.recipient.user.username,
                 'timestamp': naturaltime(self.timestamp),
                 'body': self.body}
+
+    def send_push_notification(self):
+        message = 'New message from %s' % self.sender.user.username
+        self.recipient.user.apnsdevice_set.all().send_message(message, badge=1)
+        self.recipient.user.gcmdevice_set.all().send_message(message)

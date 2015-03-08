@@ -44,6 +44,7 @@ INSTALLED_APPS = (
     'captcha',
     'django_countries',
     'django_extensions',
+    'push_notifications',
     'marketing',
     'legal',
     'api',
@@ -162,3 +163,8 @@ ALLOWED_HOSTS = [
 AWS_BACKUP_BUCKET_NAME = 'halalar-backup'
 
 ASANA_EMAIL = 'x+18207867958361@mail.asana.com'
+
+PUSH_NOTIFICATIONS_SETTINGS = {
+    'GCM_API_KEY': os.environ['GCM_API_KEY'],
+    'APNS_CERTIFICATE': os.environ['APNS_CERTIFICATE'],
+}

@@ -12,4 +12,5 @@ urlpatterns = [
     url(r'^get-conversations/$', views.GetConversationsAPI.as_view(), name='api-get_conversations'),
     url(r'^get-conversation/(?P<username>\w+)/$', views.GetConversationAPI.as_view(), name='api-get_conversation'),
     url(r'^send-message/(?P<username>\w+)/$', views.SendMessageAPI.as_view(), name='api-send_message'),
+    url(r'^register-push-notifications/(?P<platform>(iOS|Android))/$', views.RegisterPushNotificationsAPI.as_view(), name='api-register_push_notifications'),
 ]

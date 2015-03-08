@@ -121,3 +121,9 @@ class MessageTestCase(TestCase):
                     'body': BODY}
 
         self.assertEqual(message.serialize(), expected)
+
+    def test_send_push_notification(self):
+        sender = create_profile(create_user())
+        recipient = create_profile(create_user(1), 1)
+        message = create_message(sender, recipient)
+        message.send_push_notification()

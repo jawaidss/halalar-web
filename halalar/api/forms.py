@@ -1,3 +1,5 @@
+from push_notifications.models import APNSDevice, GCMDevice
+
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
@@ -63,3 +65,13 @@ class MessageForm(APIForm, forms.ModelForm):
     class Meta:
         model = Message
         fields = ['body']
+
+class APNSDeviceForm(APIForm, forms.ModelForm):
+    class Meta:
+        model = APNSDevice
+        fields = ['registration_id']
+
+class GCMDeviceForm(APIForm, forms.ModelForm):
+    class Meta:
+        model = GCMDevice
+        fields = ['registration_id']
