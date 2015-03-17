@@ -8,43 +8,35 @@
     <meta name="description" content="{% block description %}{% endblock %}">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="stylesheet" href="https://yui-s.yahooapis.com/pure/0.5.0/pure-min.css">
+    <link rel="stylesheet" href="https://yui-s.yahooapis.com/pure/0.6.0/pure-min.css">
     <!--[if lte IE 8]>
-        <link rel="stylesheet" href="https://yui-s.yahooapis.com/pure/0.5.0/grids-responsive-old-ie-min.css">
+        <link rel="stylesheet" href="https://yui-s.yahooapis.com/pure/0.6.0/grids-responsive-old-ie-min.css">
     <![endif]-->
     <!--[if gt IE 8]><!-->
-        <link rel="stylesheet" href="https://yui-s.yahooapis.com/pure/0.5.0/grids-responsive-min.css">
+        <link rel="stylesheet" href="https://yui-s.yahooapis.com/pure/0.6.0/grids-responsive-min.css">
     <!--<![endif]-->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald">
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
   </head>
   <body>
-    <div class="pure-menu pure-menu-open pure-menu-horizontal">
-      <ul>
-        <li><a href="{% url 'marketing-about' %}">About</a></li>
-      </ul>
-
-      <a href="{% url 'marketing-home' %}" class="pure-menu-heading">
+    <div class="pure-menu pure-menu-horizontal">
+      <a href="{% url 'marketing-home' %}" class="pure-menu-heading pure-menu-link">
         <img class="icon" src="{% static 'img/icon.png' %}" alt="{{ site.name }}">
       </a>
 
-      <ul>
-        <li><a href="{% url 'marketing-contact' %}">Contact</a></li>
+      <ul class="pure-menu-list">
+        <li class="pure-menu-item"><a href="{% url 'marketing-about' %}" class="pure-menu-link">About</a></li>
+        <li class="pure-menu-item"><a href="{% url 'marketing-contact' %}" class="pure-menu-link">Contact</a></li>
       </ul>
     </div>
 
-    <div class="content-container">
-      <div class="content">
-        {% block content %}{% endblock %}
-      </div>
-    </div>
+    {% block content %}{% endblock %}
 
-    <div class="pure-menu pure-menu-open pure-menu-horizontal">
+    <div class="pure-menu pure-menu-horizontal">
       <span class="pure-menu-heading">Copyright &copy; {% now "Y" %} Hurriyah Ltd. Co. All rights reserved.</span>
 
-      <ul>
-        <li><a href="{% url 'legal-privacy_policy' %}">Privacy Policy</a></li>
-        <li><a href="{% url 'legal-terms_of_service' %}">Terms of Service</a></li>
+      <ul class="pure-menu-list">
+        <li class="pure-menu-item"><a href="{% url 'legal-privacy_policy' %}" class="pure-menu-link">Privacy Policy</a></li>
+        <li class="pure-menu-item"><a href="{% url 'legal-terms_of_service' %}" class="pure-menu-link">Terms of Service</a></li>
       </ul>
     </div>
 

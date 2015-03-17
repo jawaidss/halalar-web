@@ -9,15 +9,32 @@
 <div class="pure-g">
   <div class="pure-u-1 pure-u-sm-1-2">
     <div class="l-box">
-      <img class="pure-img splash" src="{% static 'img/splash.png' %}" alt="{{ site.name }}">
+      <img class="pure-img" src="{% static 'img/phones.png' %}" alt="{{ site.name }}">
     </div>
   </div>
 
   <div class="pure-u-1 pure-u-sm-1-2">
     <div class="l-box">
-      <h1>A mobile app for halal hollering</h1>
-      <h2><a class="pure-button" href="{% url 'marketing-about' %}">Learn more &raquo;</a></h2>
+      <h1>{{ site.name }}</h1>
+      <h2>A mobile app for halal hollering</h2>
+    </div>
 
+    <div class="l-box">
+      <a href="http://itunes.apple.com/us/app/halalar/id935866051"><img class="pure-img download" src="{% static 'img/apple-app-store.png' %}" alt="Apple App Store"></a>
+      <a href="http://play.google.com/store/apps/details?id=com.hurriyah.halalar"><img class="pure-img download" src="{% static 'img/google-play-store.png' %}" alt="Google Play Store"></a>
+    </div>
+
+    <div class="l-box">
+      <a href="http://facebook.com/halalarapp"><img class="pure-img social" src="{% static 'img/facebook.png' %}" alt="Facebook"></a>
+      <a href="http://twitter.com/halalarapp"><img class="pure-img social" src="{% static 'img/twitter.png' %}" alt="Twitter"></a>
+      <a href="http://instagram.com/halalarapp"><img class="pure-img social" src="{% static 'img/instagram.png' %}" alt="Instagram"></a>
+      <a href="http://google.com/+halalarapp"><img class="pure-img social" src="{% static 'img/google-plus.png' %}" alt="Google+"></a>
+      <a href="http://youtube.com/halalar"><img class="pure-img social" src="{% static 'img/youtube.png' %}" alt="YouTube"></a>
+      <a href="http://pinterest.com/halalar"><img class="pure-img social" src="{% static 'img/pinterest.png' %}" alt="Pinterest"></a>
+      <a href="http://halalar.tumblr.com"><img class="pure-img social" src="{% static 'img/tumblr.png' %}" alt="Tumblr"></a>
+    </div>
+
+    <div class="l-box">
       <!-- Begin MailChimp Signup Form -->
       <link rel="stylesheet" href="//cdn-images.mailchimp.com/embedcode/slim-081711.css">
       <div id="mc_embed_signup">
@@ -31,21 +48,6 @@
       </div>
       <!--End mc_embed_signup-->
     </div>
-  </div>
-
-  <div class="pure-u-1 l-box">
-    <a href="http://itunes.apple.com/us/app/halalar/id935866051"><img class="pure-img download" src="{% static 'img/apple-app-store.png' %}" alt="Apple App Store"></a>
-    <a href="http://play.google.com/store/apps/details?id=com.hurriyah.halalar"><img class="pure-img download" src="{% static 'img/google-play-store.png' %}" alt="Google Play Store"></a>
-  </div>
-
-  <div class="pure-u-1 l-box">
-    <a href="http://facebook.com/halalarapp"><img class="social" src="{% static 'img/facebook.png' %}" alt="Facebook"></a>
-    <a href="http://twitter.com/halalarapp"><img class="social" src="{% static 'img/twitter.png' %}" alt="Twitter"></a>
-    <a href="http://instagram.com/halalarapp"><img class="social" src="{% static 'img/instagram.png' %}" alt="Instagram"></a>
-    <a href="http://google.com/+halalarapp"><img class="social" src="{% static 'img/google-plus.png' %}" alt="Google+"></a>
-    <a href="http://youtube.com/halalar"><img class="social" src="{% static 'img/youtube.png' %}" alt="YouTube"></a>
-    <a href="http://pinterest.com/halalar"><img class="social" src="{% static 'img/pinterest.png' %}" alt="Pinterest"></a>
-    <a href="http://halalar.tumblr.com"><img class="social" src="{% static 'img/tumblr.png' %}" alt="Tumblr"></a>
   </div>
 </div>
 {% endblock %}

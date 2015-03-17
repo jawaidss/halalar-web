@@ -1,20 +1,6 @@
-html, button, input, select, textarea,
-.pure-g [class *= "pure-u"] {
-  font-family: Oswald;
-  text-align: center;
-}
-
-a {
-  color: #ffffff;
-}
-
-.content-container {
-  background-color: #ff9316;
-}
-
-.content {
+body {
   margin: 0 auto;
-  max-width: 568px;
+  max-width: 1000px;
 }
 
 .pure-img {
@@ -29,20 +15,12 @@ a {
   width: 50px;
 }
 
-.splash {
-  width: 250px;
-}
-
 .download {
-  width: 250px;
+  width: 49%;
 }
 
 .social {
-  width: 57px;
-}
-
-.pure-form {
-  text-align: left;
+  width: 13%;
 }
 
 .errorlist {
